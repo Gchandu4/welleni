@@ -1,0 +1,163 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║          WELLENI - ENVIRONMENT VARIABLES SETUP                 ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+📁 FILES CREATED FOR YOU:
+
+✅ .env                  - Local environment variables (NOT in Git)
+✅ .env.example          - Template for .env file
+✅ env.js                - JavaScript config (NOT in Git)
+✅ env.example.js        - Template for env.js
+✅ config.js             - Configuration loader
+✅ ENV_SETUP.md          - Detailed setup guide
+✅ setup-env.bat         - Quick setup script
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 QUICK SETUP (2 STEPS)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: LOCAL DEVELOPMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Double-click: setup-env.bat
+
+This will:
+1. Create env.js from template
+2. Open it in Notepad for editing
+3. Show you the setup guide
+
+Then add your credentials:
+
+   SUPABASE_URL: https://xxxxx.supabase.co
+   SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   RAZORPAY_KEY_ID: rzp_test_xxxxx
+
+Save and close.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 2: RENDER DEPLOYMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After deploying to Render:
+
+1. Go to: https://dashboard.render.com/
+2. Select your "welleni" site
+3. Click "Environment" in sidebar
+4. Add these variables:
+
+   Key: SUPABASE_URL
+   Value: https://xxxxx.supabase.co
+
+   Key: SUPABASE_ANON_KEY
+   Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+   Key: RAZORPAY_KEY_ID
+   Value: rzp_test_xxxxx (or rzp_live_xxxxx for production)
+
+   Key: APP_NAME
+   Value: Welleni
+
+   Key: APP_URL
+   Value: https://welleni.onrender.com
+
+5. Click "Save Changes"
+6. Wait for automatic redeploy
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔑 WHERE TO GET YOUR API KEYS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SUPABASE:
+1. Go to: https://app.supabase.com/
+2. Select your project
+3. Click: Settings → API
+4. Copy:
+   - Project URL → SUPABASE_URL
+   - anon public key → SUPABASE_ANON_KEY
+
+RAZORPAY:
+1. Go to: https://dashboard.razorpay.com/
+2. Click: Settings → API Keys
+3. Generate keys (Test or Live mode)
+4. Copy: Key ID → RAZORPAY_KEY_ID
+
+⚠️ NEVER expose your Razorpay Key Secret!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔒 SECURITY NOTES
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ DO:
+   - Keep env.js and .env LOCAL ONLY
+   - Use Render Environment Variables for production
+   - Use TEST keys during development
+   - Use LIVE keys only in production
+
+❌ DON'T:
+   - Commit env.js or .env to Git
+   - Share your .env file
+   - Use live keys during development
+   - Expose secret keys in client code
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 FILES PROTECTED BY .gitignore
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These files will NOT be committed to Git:
+
+   ✅ .env
+   ✅ .env.local
+   ✅ .env.production
+   ✅ env.js
+
+These files WILL be committed (safe templates):
+
+   ✅ .env.example
+   ✅ env.example.js
+   ✅ config.js
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 TESTING YOUR SETUP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+LOCAL:
+1. Open index.html in browser
+2. Press F12 (Developer Console)
+3. Type: console.log(window.ENV)
+4. You should see your configuration
+
+PRODUCTION:
+1. Visit: https://welleni.onrender.com
+2. Press F12 (Developer Console)
+3. Type: console.log(window.ENV)
+4. Verify values are correct
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DETAILED GUIDES
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For more information, see:
+
+   ENV_SETUP.md              - Complete environment setup guide
+   RENDER_DEPLOYMENT.md      - Render deployment instructions
+   DEPLOYMENT_CHECKLIST.md   - Step-by-step checklist
+   START_HERE.md             - Getting started guide
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ready to set up? Double-click: setup-env.bat

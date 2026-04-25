@@ -1,0 +1,12 @@
+{
+  "name": "e-hospitee",
+  "version": "1.0.0",
+  "description": "E-Hospitee Hospital & Patient Management Platform",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "npx serve . -p 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
