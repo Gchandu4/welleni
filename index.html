@@ -1606,12 +1606,7 @@ async function handleCTA(btn){
   const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
   window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
   return;
-      }
-      throw error;
-    }
-    
-    // Log to audit
-    SecureLogger.info('demo_request', { hospital: hospitalName, mobile: mobile });
+   }
     
     // Success
     btn.textContent = 'Sent ✓';
