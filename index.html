@@ -1624,6 +1624,10 @@ async function handleCTA(btn){
     inputs.forEach(i => i.value = '');
     
     showToast('Demo request sent! We\'ll call you within 24 hours.');
+
+    // ✅ WhatsApp notification to you (always fires on success)
+    const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
+    window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
     
   } catch(e) {
     console.error('Demo request error:', e);
