@@ -1592,24 +1592,20 @@ async function handleCTA(btn){
       source: 'website'
     }).select().single();
     
-    if (error) {
-      // Check if table doesn't exist
-      if (error.message && error.message.includes('demo_requests')) {
-        // Table doesn't exist - still show success to user but log error
-        console.error('Demo requests table not set up yet:', error);
-        SecureLogger.warn('demo_request_table_missing', { hospital: hospitalName, mobile: mobile });
-        
-        // Show success anyway (request will be in logs)
-        btn.textContent = 'Sent ✓';
-        btn.style.background = '#16A34A';
-        document.getElementById('cta-success').style.display = 'block';
-        inputs.forEach(i => i.value = '');
-        showToast('Request received! We\'ll call you within 24 hours.');
-        
-        // Open WhatsApp as backup
-        const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
-        window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
-        return;
+  if (error) {
+  console.error('Demo request error:', error);
+  
+  // Show success to user anyway + send WhatsApp
+  btn.textContent = 'Sent ✓';
+  btn.style.background = '#16A34A';
+  document.getElementById('cta-success').style.display = 'block';
+  inputs.forEach(i => i.value = '');
+  showToast('Request received! We\'ll call you within 24 hours.');
+  
+  // WhatsApp notification as backup
+  const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
+  window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
+  return;
       }
       throw error;
     }
