@@ -4,8 +4,8 @@
 const config = {
   // Supabase Configuration
   supabase: {
-    url: import.meta.env.VITE_SUPABASE_URL || 'your-project-url-here',
-    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key-here'
+    url: import.meta.env.VITE_SUPABASE_URL || 'https://tawzbsjsetjarzcouhsq.supabase.co',
+    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhd3pic2pzZXRqYXJ6Y291aHNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMjE1OTksImV4cCI6MjA5MjY5NzU5OX0.-Zy46oI24uD9W9caapJTrIGXWvf5XlomEHDxO70zTu4'
   },
   
   // Razorpay Configuration
