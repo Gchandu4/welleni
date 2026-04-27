@@ -9,6 +9,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Razorpay Checkout -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Google Maps Places API — replace YOUR_GOOGLE_MAPS_API_KEY with your key -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtZB2BU4UPcX9OfYnR_bs50o2YyfneYE8&libraries=places" defer></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;font-size:16px}
@@ -1176,46 +1178,38 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
     </div>
 
     <!-- BOOK -->
-   <!-- LOCATION SEARCH -->
-<div class="dash-card" style="margin-bottom:20px">
-  <div class="dash-card-title">🔍 Find Doctors Near You</div>
-
-  <!-- Location bar -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:#F0FDFA;border:1px solid #99F6E4;border-radius:10px;padding:12px 14px;">
-    <span style="font-size:1.2rem;">📍</span>
-    <span id="loc-text" style="font-size:.9rem;color:#085553;flex:1;font-weight:500;">Detecting your location...</span>
-    <button onclick="getUserLocation()" style="background:#085553;color:#CCFBF1;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer;">📡 Refresh</button>
-  </div>
-
-  <!-- Filters -->
-  <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:16px;">
-    <input class="form-control" id="doc-search" placeholder="🔍 Specialty or doctor name" oninput="filterDoctors()"/>
-    <select class="form-control" id="doc-specialty" onchange="searchNearbyHospitals()">
-      <option value="hospital">All Hospitals</option>
-      <option value="cardiologist">Cardiology</option>
-      <option value="orthopedic">Orthopaedics</option>
-      <option value="neurologist">Neurology</option>
-      <option value="dermatologist">Dermatology</option>
-      <option value="pediatrician">Paediatrics</option>
-      <option value="dentist">Dentist</option>
-      <option value="physiotherapist">Physiotherapy</option>
-    </select>
-    <button class="btn-primary" style="height:46px;border-radius:10px;padding:0 20px" onclick="searchNearbyHospitals()">Search</button>
-  </div>
-
-  <!-- Status -->
-  <div id="loc-status" style="display:none;text-align:center;padding:20px;color:#6B7280;font-size:.88rem;">
-    <div style="font-size:1.5rem;margin-bottom:8px">⏳</div>Searching nearby...
-  </div>
-</div>
-
-<!-- Results grid -->
-<div class="book-grid" id="nearby-results">
-  <!-- Default static cards shown before location loads -->
-  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
-  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
-  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
-</div>
+    <div class="dash-panel" id="p-book">
+      <div class="dash-header"><div class="dash-title">Book Appointment</div><div class="dash-sub">Find a specialist and book a slot instantly</div></div>
+      <!-- Location bar -->
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-title">🔍 Find Doctors Near You</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:#F0FDFA;border:1px solid #99F6E4;border-radius:10px;padding:12px 14px;">
+          <span style="font-size:1.2rem">📍</span>
+          <span id="loc-text" style="font-size:.9rem;color:#085553;flex:1;font-weight:500">Detecting your location...</span>
+          <button onclick="getUserLocation()" style="background:#085553;color:#CCFBF1;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer">📡 Refresh</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px">
+          <input class="form-control" id="doc-search" placeholder="🔍 Specialty or doctor name" oninput="filterDoctors()"/>
+          <select class="form-control" id="doc-specialty" onchange="searchNearbyHospitals()">
+            <option value="hospital">All Hospitals</option>
+            <option value="cardiologist">Cardiology</option>
+            <option value="orthopedic">Orthopaedics</option>
+            <option value="neurologist">Neurology</option>
+            <option value="dermatologist">Dermatology</option>
+            <option value="pediatrician">Paediatrics</option>
+            <option value="dentist">Dentist</option>
+            <option value="physiotherapist">Physiotherapy</option>
+          </select>
+          <button class="btn-primary" style="height:46px;border-radius:10px;padding:0 20px" onclick="searchNearbyHospitals()">Search</button>
+        </div>
+        <div id="loc-status" style="display:none;text-align:center;padding:16px;color:#6B7280;font-size:.88rem">⏳ Searching nearby...</div>
+      </div>
+      <!-- Results -->
+      <div class="book-grid" id="nearby-results">
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
+      </div>
     </div>
 
     <!-- VITALS -->
@@ -1614,21 +1608,30 @@ async function handleCTA(btn){
       source: 'website'
     }).select().single();
     
-  if (error) {
-  console.error('Demo request error:', error);
-  
-  // Show success to user anyway + send WhatsApp
-  btn.textContent = 'Sent ✓';
-  btn.style.background = '#16A34A';
-  document.getElementById('cta-success').style.display = 'block';
-  inputs.forEach(i => i.value = '');
-  showToast('Request received! We\'ll call you within 24 hours.');
-  
-  // WhatsApp notification as backup
-  const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
-  window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
-  return;
-   }
+    if (error) {
+      // Check if table doesn't exist
+      if (error.message && error.message.includes('demo_requests')) {
+        // Table doesn't exist - still show success to user but log error
+        console.error('Demo requests table not set up yet:', error);
+        SecureLogger.warn('demo_request_table_missing', { hospital: hospitalName, mobile: mobile });
+        
+        // Show success anyway (request will be in logs)
+        btn.textContent = 'Sent ✓';
+        btn.style.background = '#16A34A';
+        document.getElementById('cta-success').style.display = 'block';
+        inputs.forEach(i => i.value = '');
+        showToast('Request received! We\'ll call you within 24 hours.');
+        
+        // Open WhatsApp as backup
+        const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
+        window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
+        return;
+      }
+      throw error;
+    }
+    
+    // Log to audit
+    SecureLogger.info('demo_request', { hospital: hospitalName, mobile: mobile });
     
     // Success
     btn.textContent = 'Sent ✓';
@@ -1637,10 +1640,6 @@ async function handleCTA(btn){
     inputs.forEach(i => i.value = '');
     
     showToast('Demo request sent! We\'ll call you within 24 hours.');
-
-    // ✅ WhatsApp notification to you (always fires on success)
-    const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
-    window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
     
   } catch(e) {
     console.error('Demo request error:', e);
@@ -1813,22 +1812,17 @@ const DB = {
 
 let currentUser = null;
 
-// Init DB on load — then restore session and redirect if logged in
+// Init DB on load
 DB.init().then(() => {
   const raw = localStorage.getItem('welleni_session');
   if (!raw) return;
-
   try {
     const session = JSON.parse(raw);
     const user = session.user || session;
-
-    // Check if session is expired
     if (session.expiresAt && Date.now() > session.expiresAt) {
       localStorage.removeItem('welleni_session');
       return;
     }
-
-    // Redirect based on role
     if (user.role === 'patient') {
       goPage('page-patient');
       loadPatientDash(user);
@@ -1836,11 +1830,9 @@ DB.init().then(() => {
       goPage('pagwelltal');
       loadHospitalDash(user);
     }
-
   } catch(e) {
     localStorage.removeItem('welleni_session');
   }
-
 }).catch(e => console.error('DB init failed:', e));
 
 // ── REGISTRATION (Supabase direct) ──
@@ -2174,9 +2166,9 @@ function renderRecords(recs) {
       <div class="record-icon">${icons[r.type]||'📄'}</div>
       <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
       <div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">
-        ${r.fileData ? `<button class="record-btn" onclick="viewRecord('${r.id}')">👁 View</button>` : `<span style="font-size:.72rem;color:var(--text-light);padding:5px 8px">No file</span>`}
-        <button class="record-btn" style="background:#EFF6FF;color:#2563EB;border:none" onclick="openEditRecord('${r.id}')">✏ Edit</button>
-        <button class="record-btn" style="background:#FEE2E2;color:var(--emergency);border:none" onclick="deleteRecord('${r.id}')">🗑 Delete</button>
+        ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : `<span style="font-size:.72rem;color:var(--text-light);padding:5px 8px">No file</span>`}
+        <button class="record-btn" style="background:#EFF6FF;color:#2563EB;border:none" onclick="openEditRecord(${r.id})">✏ Edit</button>
+        <button class="record-btn" style="background:#FEE2E2;color:var(--emergency);border:none" onclick="deleteRecord(${r.id})">🗑 Delete</button>
       </div>
     </div>`).join('') : '<div style="color:var(--text-light);font-size:.85rem;padding:12px 0">No records found</div>';
 
@@ -2187,7 +2179,7 @@ function renderRecords(recs) {
     <div class="record-item">
       <div class="record-icon">${icons[r.type]||'📄'}</div>
       <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
-      ${r.fileData ? `<button class="record-btn" onclick="viewRecord('${r.id}')">👁 View</button>` : ''}
+      ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : ''}
     </div>`).join('');
 
   const statEl = document.getElementById('stat-records');
@@ -2504,6 +2496,59 @@ async function bookAppointment(doctor, specialty, hospital, fee) {
 // ── SIGN OUT ──
 function signOut() { DB.clearSession(); goPage('page-landing'); }
 
+// ── LOCATION-BASED DOCTOR SEARCH ──
+let userLat = null, userLng = null;
+function getUserLocation() {
+  const locText = document.getElementById('loc-text');
+  if (locText) locText.textContent = 'Detecting your location...';
+  if (!navigator.geolocation) { if (locText) locText.textContent = 'Location not supported'; return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude; userLng = pos.coords.longitude;
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`)
+      .then(r => r.json()).then(data => {
+        const area = data.address.suburb || data.address.neighbourhood || data.address.city || 'your area';
+        if (locText) locText.textContent = `📍 ${area}, ${data.address.city || 'Hyderabad'}`;
+      }).catch(() => { if (locText) locText.textContent = '📍 Location detected'; });
+    searchNearbyHospitals();
+  }, () => { if (locText) locText.textContent = '⚠️ Location denied — showing default results'; }, { timeout: 8000 });
+}
+function searchNearbyHospitals() {
+  if (!userLat || !userLng) { getUserLocation(); return; }
+  if (typeof google === 'undefined') return;
+  const status = document.getElementById('loc-status');
+  const grid = document.getElementById('nearby-results');
+  const typeEl = document.getElementById('doc-specialty');
+  if (!grid) return;
+  const type = typeEl ? typeEl.value : 'hospital';
+  if (status) status.style.display = 'block';
+  grid.innerHTML = '';
+  const service = new google.maps.places.PlacesService(document.createElement('div'));
+  service.nearbySearch({ location: new google.maps.LatLng(userLat, userLng), radius: 5000,
+    keyword: type === 'hospital' ? 'hospital' : type + ' clinic', type: ['hospital','doctor','health']
+  }, (results, statusCode) => {
+    if (status) status.style.display = 'none';
+    if (statusCode !== google.maps.places.PlacesServiceStatus.OK || !results.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280"><div style="font-size:2rem">🔍</div>No results found nearby.</div>`; return;
+    }
+    grid.innerHTML = results.slice(0, 9).map(place => {
+      const dist = getDistance(userLat, userLng, place.geometry.location.lat(), place.geometry.location.lng());
+      const rating = place.rating ? `${place.rating} ⭐` : 'New';
+      const open = place.opening_hours?.open_now ? '<span style="color:#16A34A;font-size:.78rem;font-weight:600">● Open Now</span>' : '<span style="color:#DC2626;font-size:.78rem">● Closed</span>';
+      return `<div class="book-card"><div style="font-size:1.5rem;margin-bottom:6px">🏥</div>
+        <div class="book-hosp" style="font-size:.92rem">${place.name}</div>
+        <div style="font-size:.78rem;color:#6B7280;margin:3px 0">${place.vicinity}</div>
+        <div style="display:flex;justify-content:space-between;margin:6px 0"><span style="font-size:.78rem">${rating}</span><span style="font-size:.78rem;color:#085553;font-weight:600">📍 ${dist} km</span></div>
+        <div style="margin-bottom:10px">${open}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-primary" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem" onclick="bookAppointmentWithPayment('Doctor','Specialist','${place.name.replace(/'/g,"\\'")}',500)">Book Now</button>
+          <a href="https://www.google.com/maps/place/?q=place_id:${place.place_id}" target="_blank" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem;background:#F0FDFA;color:#085553;border:1px solid #99F6E4;text-align:center;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center">🗺️ Map</a>
+        </div></div>`;
+    }).join('');
+  });
+}
+function getDistance(lat1,lng1,lat2,lng2){const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;return(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);}
+function filterDoctors(){const q=(document.getElementById('doc-search')?.value||'').toLowerCase();document.querySelectorAll('#nearby-results .book-card').forEach(c=>{c.style.display=c.innerText.toLowerCase().includes(q)?'':'none';});}
+
 // ── WHATSAPP CHAT ──
 const WA_NUMBER = '917032527095'; // Your WhatsApp number
 let waOpen = false;
@@ -2649,120 +2694,6 @@ setTimeout(()=>{
     }
   } catch(e) {}
 })();
-  // ── LOCATION-BASED DOCTOR SEARCH ──
-let userLat = null, userLng = null;
-
-function getUserLocation() {
-  const locText = document.getElementById('loc-text');
-  locText.textContent = 'Detecting your location...';
-
-  if (!navigator.geolocation) {
-    locText.textContent = '⚠️ Location not supported by your browser';
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLng = pos.coords.longitude;
-
-      // Reverse geocode to get area name
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`)
-        .then(r => r.json())
-        .then(data => {
-          const area = data.address.suburb || data.address.neighbourhood || data.address.city_district || data.address.city || 'your area';
-          document.getElementById('loc-text').textContent = `📍 ${area}, ${data.address.city || 'Hyderabad'}`;
-        })
-        .catch(() => {
-          document.getElementById('loc-text').textContent = `📍 ${userLat.toFixed(3)}, ${userLng.toFixed(3)}`;
-        });
-
-      searchNearbyHospitals();
-    },
-    err => {
-      document.getElementById('loc-text').textContent = '⚠️ Location access denied — showing default results';
-    },
-    { timeout: 8000, enableHighAccuracy: true }
-  );
-}
-
-function searchNearbyHospitals() {
-  if (!userLat || !userLng) { getUserLocation(); return; }
-  if (typeof google === 'undefined') { return; } // Maps not loaded yet
-
-  const status = document.getElementById('loc-status');
-  const grid   = document.getElementById('nearby-results');
-  const type   = document.getElementById('doc-specialty').value;
-
-  status.style.display = 'block';
-  grid.innerHTML = '';
-
-  const service = new google.maps.places.PlacesService(document.createElement('div'));
-  service.nearbySearch({
-    location: new google.maps.LatLng(userLat, userLng),
-    radius: 5000,          // 5 km radius
-    keyword: type === 'hospital' ? 'hospital' : type + ' clinic hospital',
-    type: ['hospital', 'doctor', 'health']
-  }, (results, statusCode) => {
-    status.style.display = 'none';
-
-    if (statusCode !== google.maps.places.PlacesServiceStatus.OK || !results.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280;">
-        <div style="font-size:2rem;margin-bottom:8px">🔍</div>
-        No results found nearby. Try a different specialty.
-      </div>`;
-      return;
-    }
-
-    grid.innerHTML = results.slice(0, 9).map(place => {
-      const dist = getDistance(userLat, userLng, place.geometry.location.lat(), place.geometry.location.lng());
-      const stars = '⭐'.repeat(Math.round(place.rating || 4));
-      const rating = place.rating ? `${place.rating} ${stars}` : 'New';
-      const open = place.opening_hours?.open_now ? '<span style="color:#16A34A;font-size:.78rem;font-weight:600;">● Open Now</span>' : '<span style="color:#DC2626;font-size:.78rem;">● Closed</span>';
-
-      return `
-        <div class="book-card">
-          <div style="font-size:1.5rem;margin-bottom:6px">🏥</div>
-          <div class="book-hosp" style="font-size:.92rem">${place.name}</div>
-          <div style="font-size:.78rem;color:#6B7280;margin:3px 0;">${place.vicinity}</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin:6px 0;">
-            <span style="font-size:.78rem;color:#374151;">${rating}</span>
-            <span style="font-size:.78rem;color:#085553;font-weight:600;">📍 ${dist} km away</span>
-          </div>
-          <div style="margin-bottom:10px;">${open}</div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn-primary" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem"
-              onclick="bookAppointmentWithPayment('Doctor','Specialist','${place.name.replace(/'/g,"\\'")}',500)">Book Now</button>
-            <a href="https://www.google.com/maps/place/?q=place_id:${place.place_id}" target="_blank"
-              style="flex:1;padding:8px;border-radius:8px;font-size:.78rem;background:#F0FDFA;color:#085553;border:1px solid #99F6E4;text-align:center;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;">
-              🗺️ Map
-            </a>
-          </div>
-        </div>`;
-    }).join('');
-  });
-}
-
-// Calculate distance in km between two coordinates
-function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
-  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
-}
-
-function filterDoctors() {
-  const q = document.getElementById('doc-search').value.toLowerCase();
-  document.querySelectorAll('#nearby-results .book-card').forEach(card => {
-    card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
-  });
-}
-
-// Auto-detect location when appointment page opens
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(getUserLocation, 1000);
-});
 </script>
 
 <!-- ══════════════════════════════════════
@@ -2793,7 +2724,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ⚠️ IMPORTANT: Replace with your actual Razorpay Key ID
 // Get it from: https://dashboard.razorpay.com/app/keys
-const RAZORPAY_KEY_ID = 'rzp_test_XXXXXXXXXXXX'; // ← ADD YOUR KEY HERE
+const RAZORPAY_KEY_ID = 'rzp_test_Shk1CMfPm2JC2T'; // ← ADD YOUR KEY HERE
 
 // Store pending appointment
 let pendingAppointment = null;
@@ -3087,10 +3018,8 @@ function downloadReceipt(invoiceNumber, doctor, hospital, date, time, amount, pa
         .total { font-size: 1.3em; font-weight: bold; color: #0B7A75; margin-top: 20px; }
         .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
         @media print { body { margin: 0; } }
-      </style>
-    <meta name="description" content="Welleni - Connecting to better health. Every hospital. Every patient. One platform.">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtZB2BU4UPcX9OfYnR_bs50o2YyfneYE8&libraries=places"></script>
-</head>
+      <\/style>
+    <\/head>
     <body>
       <div class="header">
         <div class="logo">🏥 Welleni</div>
@@ -3138,8 +3067,8 @@ function downloadReceipt(invoiceNumber, doctor, hospital, date, time, amount, pa
         <p>For support: support@welleni.com | +91 7032527095</p>
         <p style="font-size: 0.9em; margin-top: 20px;">This is a computer-generated receipt and does not require a signature.</p>
       </div>
-    </body>
-    </html>
+    <\/body>
+    <\/html>
   `;
   
   // Create blob and download
