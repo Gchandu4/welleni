@@ -1994,6 +1994,7 @@ async function handleRegister() {
       //const email = document.getElementById('reg-hosp-email')?.value.trim() || null;
       //const phone = document.getElementById('reg-hosp-phone')?.value.trim() || null;
       const password = document.getElementById('reg-hosp-password')?.value || null;
+      const confirmPw  = document.getElementById('reg-hosp-confirm')?.value || null;
 
       if (!name || !email || !password) { showToast('Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
