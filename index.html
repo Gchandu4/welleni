@@ -1176,24 +1176,46 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
     </div>
 
     <!-- BOOK -->
-    <div class="dash-panel" id="p-book">
-      <div class="dash-header"><div class="dash-title">Book Appointment</div><div class="dash-sub">Find a specialist and book a slot instantly</div></div>
-      <div class="dash-card" style="margin-bottom:20px">
-        <div class="dash-card-title">Search</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div class="form-group" style="margin:0"><input class="form-control" placeholder="🔍 Specialty or doctor name"/></div>
-          <div class="form-group" style="margin:0"><select class="form-control"><option>Any Location</option><option>Jubilee Hills</option><option>Secunderabad</option><option>Banjara Hills</option></select></div>
-          <button class="btn-primary" style="height:46px;border-radius:10px">Search</button>
-        </div>
-      </div>
-      <div class="book-grid">
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Well Hospitals</div><div class="book-spec">General Medicine · Dr. R. Gupta</div><div class="book-slots">✓ 8 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. R. Gupta','General Medicine','Well Hospitals',400)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">Sunshine Hospital</div><div class="book-spec">Dermatology · Dr. A. Sharma</div><div class="book-slots">✓ 4 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. A. Sharma','Dermatology','Sunshine Hospital',450)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Medicover</div><div class="book-spec">Diabetology · Dr. K. Nair</div><div class="book-slots">✓ 6 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. K. Nair','Diabetology','Medicover',500)">Book Now</button></div>
-      </div>
+   <!-- LOCATION SEARCH -->
+<div class="dash-card" style="margin-bottom:20px">
+  <div class="dash-card-title">🔍 Find Doctors Near You</div>
+
+  <!-- Location bar -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:#F0FDFA;border:1px solid #99F6E4;border-radius:10px;padding:12px 14px;">
+    <span style="font-size:1.2rem;">📍</span>
+    <span id="loc-text" style="font-size:.9rem;color:#085553;flex:1;font-weight:500;">Detecting your location...</span>
+    <button onclick="getUserLocation()" style="background:#085553;color:#CCFBF1;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer;">📡 Refresh</button>
+  </div>
+
+  <!-- Filters -->
+  <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:16px;">
+    <input class="form-control" id="doc-search" placeholder="🔍 Specialty or doctor name" oninput="filterDoctors()"/>
+    <select class="form-control" id="doc-specialty" onchange="searchNearbyHospitals()">
+      <option value="hospital">All Hospitals</option>
+      <option value="cardiologist">Cardiology</option>
+      <option value="orthopedic">Orthopaedics</option>
+      <option value="neurologist">Neurology</option>
+      <option value="dermatologist">Dermatology</option>
+      <option value="pediatrician">Paediatrics</option>
+      <option value="dentist">Dentist</option>
+      <option value="physiotherapist">Physiotherapy</option>
+    </select>
+    <button class="btn-primary" style="height:46px;border-radius:10px;padding:0 20px" onclick="searchNearbyHospitals()">Search</button>
+  </div>
+
+  <!-- Status -->
+  <div id="loc-status" style="display:none;text-align:center;padding:20px;color:#6B7280;font-size:.88rem;">
+    <div style="font-size:1.5rem;margin-bottom:8px">⏳</div>Searching nearby...
+  </div>
+</div>
+
+<!-- Results grid -->
+<div class="book-grid" id="nearby-results">
+  <!-- Default static cards shown before location loads -->
+  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
+  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
+  <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
+</div>
     </div>
 
     <!-- VITALS -->
@@ -2627,6 +2649,120 @@ setTimeout(()=>{
     }
   } catch(e) {}
 })();
+  // ── LOCATION-BASED DOCTOR SEARCH ──
+let userLat = null, userLng = null;
+
+function getUserLocation() {
+  const locText = document.getElementById('loc-text');
+  locText.textContent = 'Detecting your location...';
+
+  if (!navigator.geolocation) {
+    locText.textContent = '⚠️ Location not supported by your browser';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+
+      // Reverse geocode to get area name
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`)
+        .then(r => r.json())
+        .then(data => {
+          const area = data.address.suburb || data.address.neighbourhood || data.address.city_district || data.address.city || 'your area';
+          document.getElementById('loc-text').textContent = `📍 ${area}, ${data.address.city || 'Hyderabad'}`;
+        })
+        .catch(() => {
+          document.getElementById('loc-text').textContent = `📍 ${userLat.toFixed(3)}, ${userLng.toFixed(3)}`;
+        });
+
+      searchNearbyHospitals();
+    },
+    err => {
+      document.getElementById('loc-text').textContent = '⚠️ Location access denied — showing default results';
+    },
+    { timeout: 8000, enableHighAccuracy: true }
+  );
+}
+
+function searchNearbyHospitals() {
+  if (!userLat || !userLng) { getUserLocation(); return; }
+  if (typeof google === 'undefined') { return; } // Maps not loaded yet
+
+  const status = document.getElementById('loc-status');
+  const grid   = document.getElementById('nearby-results');
+  const type   = document.getElementById('doc-specialty').value;
+
+  status.style.display = 'block';
+  grid.innerHTML = '';
+
+  const service = new google.maps.places.PlacesService(document.createElement('div'));
+  service.nearbySearch({
+    location: new google.maps.LatLng(userLat, userLng),
+    radius: 5000,          // 5 km radius
+    keyword: type === 'hospital' ? 'hospital' : type + ' clinic hospital',
+    type: ['hospital', 'doctor', 'health']
+  }, (results, statusCode) => {
+    status.style.display = 'none';
+
+    if (statusCode !== google.maps.places.PlacesServiceStatus.OK || !results.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280;">
+        <div style="font-size:2rem;margin-bottom:8px">🔍</div>
+        No results found nearby. Try a different specialty.
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = results.slice(0, 9).map(place => {
+      const dist = getDistance(userLat, userLng, place.geometry.location.lat(), place.geometry.location.lng());
+      const stars = '⭐'.repeat(Math.round(place.rating || 4));
+      const rating = place.rating ? `${place.rating} ${stars}` : 'New';
+      const open = place.opening_hours?.open_now ? '<span style="color:#16A34A;font-size:.78rem;font-weight:600;">● Open Now</span>' : '<span style="color:#DC2626;font-size:.78rem;">● Closed</span>';
+
+      return `
+        <div class="book-card">
+          <div style="font-size:1.5rem;margin-bottom:6px">🏥</div>
+          <div class="book-hosp" style="font-size:.92rem">${place.name}</div>
+          <div style="font-size:.78rem;color:#6B7280;margin:3px 0;">${place.vicinity}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:6px 0;">
+            <span style="font-size:.78rem;color:#374151;">${rating}</span>
+            <span style="font-size:.78rem;color:#085553;font-weight:600;">📍 ${dist} km away</span>
+          </div>
+          <div style="margin-bottom:10px;">${open}</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-primary" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem"
+              onclick="bookAppointmentWithPayment('Doctor','Specialist','${place.name.replace(/'/g,"\\'")}',500)">Book Now</button>
+            <a href="https://www.google.com/maps/place/?q=place_id:${place.place_id}" target="_blank"
+              style="flex:1;padding:8px;border-radius:8px;font-size:.78rem;background:#F0FDFA;color:#085553;border:1px solid #99F6E4;text-align:center;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;">
+              🗺️ Map
+            </a>
+          </div>
+        </div>`;
+    }).join('');
+  });
+}
+
+// Calculate distance in km between two coordinates
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return (R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))).toFixed(1);
+}
+
+function filterDoctors() {
+  const q = document.getElementById('doc-search').value.toLowerCase();
+  document.querySelectorAll('#nearby-results .book-card').forEach(card => {
+    card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// Auto-detect location when appointment page opens
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(getUserLocation, 1000);
+});
 </script>
 
 <!-- ══════════════════════════════════════
@@ -2953,6 +3089,7 @@ function downloadReceipt(invoiceNumber, doctor, hospital, date, time, amount, pa
         @media print { body { margin: 0; } }
       </style>
     <meta name="description" content="Welleni - Connecting to better health. Every hospital. Every patient. One platform.">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtZB2BU4UPcX9OfYnR_bs50o2YyfneYE8&libraries=places"></script>
 </head>
     <body>
       <div class="header">
