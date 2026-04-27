@@ -990,7 +990,7 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
         <div class="form-group"><label class="form-label">First Name *</label><input class="form-control" type="text" id="reg-fname" placeholder="Rajesh"/></div>
         <div class="form-group"><label class="form-label">Last Name *</label><input class="form-control" type="text" id="reg-lname" placeholder="Kumar"/></div>
       </div>
-      <div class="form-group">
+    <div class="form-group">
   <label class="form-label">Mobile Number *</label>
   <div style="display:flex;gap:8px">
     <input class="form-control" type="tel" id="reg-mobile" placeholder="+91 98765 43210" style="flex:1"/>
@@ -1003,7 +1003,8 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
 <div class="form-group" id="patient-otp-group" style="display:none">
   <label class="form-label">Enter OTP *</label>
   <div style="display:flex;gap:8px">
-    <input class="form-control" type="text" id="reg-patient-otp" placeholder="6-digit OTP" maxlength="6" style="flex:1;letter-spacing:4px;font-size:1.1rem;font-weight:600"/>
+    <input class="form-control" type="text" id="reg-patient-otp" placeholder="6-digit OTP" maxlength="6"
+      style="flex:1;letter-spacing:4px;font-size:1.1rem;font-weight:600"/>
     <button type="button" onclick="verifyOTP('patient')" id="patient-verify-btn"
       style="background:#0B7A75;color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:.82rem;font-weight:600;cursor:pointer">
       Verify
@@ -1053,7 +1054,7 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
   </div>
   <div id="hosp-otp-status" style="font-size:.78rem;margin-top:6px;color:#6B7280"></div>
 </div>
-      <div class="form-group"><label class="form-label">Password *</label><input class="form-control" type="password" id="reg-hosp-password" placeholder="Min 8 chars, 1 uppercase, 1 number"/></div>
+      <div class="form-group"><label class="form-label">Confirm Password *</label><input class="form-control" type="password" id="reg-hosp-confirm" placeholder="Repeat password"/></div>
     </div>
 
     <button class="form-btn" id="reg-btn" onclick="handleRegister()">Create Account →</button>
@@ -1993,9 +1994,10 @@ async function handleRegister() {
      // const name = document.getElementById('reg-hosp-name')?.value.trim() || null;
       //const email = document.getElementById('reg-hosp-email')?.value.trim() || null;
       //const phone = document.getElementById('reg-hosp-phone')?.value.trim() || null;
-      const password = document.getElementById('reg-hosp-password')?.value || null;
+      const confirmPwHosp = document.getElementById('reg-hosp-confirm')?.value || '';
 
       if (!name || !email || !password) { showToast('Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+     // if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (phone && !otpVerified.hospital) { showToast('Please verify your phone number with OTP'); btn.textContent='Create Account →'; btn.disabled=false; return; }
 
