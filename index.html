@@ -990,7 +990,27 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
         <div class="form-group"><label class="form-label">First Name *</label><input class="form-control" type="text" id="reg-fname" placeholder="Rajesh"/></div>
         <div class="form-group"><label class="form-label">Last Name *</label><input class="form-control" type="text" id="reg-lname" placeholder="Kumar"/></div>
       </div>
-      <div class="form-group"><label class="form-label">Mobile Number</label><input class="form-control" type="tel" id="reg-mobile" placeholder="+91 98765 43210"/></div>
+      <div class="form-group">
+  <label class="form-label">Mobile Number *</label>
+  <div style="display:flex;gap:8px">
+    <input class="form-control" type="tel" id="reg-mobile" placeholder="+91 98765 43210" style="flex:1"/>
+    <button type="button" onclick="sendOTP('patient')" id="patient-otp-btn"
+      style="background:#085553;color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap">
+      Send OTP
+    </button>
+  </div>
+</div>
+<div class="form-group" id="patient-otp-group" style="display:none">
+  <label class="form-label">Enter OTP *</label>
+  <div style="display:flex;gap:8px">
+    <input class="form-control" type="text" id="reg-patient-otp" placeholder="6-digit OTP" maxlength="6" style="flex:1;letter-spacing:4px;font-size:1.1rem;font-weight:600"/>
+    <button type="button" onclick="verifyOTP('patient')" id="patient-verify-btn"
+      style="background:#0B7A75;color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:.82rem;font-weight:600;cursor:pointer">
+      Verify
+    </button>
+  </div>
+  <div id="patient-otp-status" style="font-size:.78rem;margin-top:6px;color:#6B7280"></div>
+</div>
       <div class="form-group"><label class="form-label">Email Address *</label><input class="form-control" type="email" id="reg-email" placeholder="rajesh@email.com"/></div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-control" type="date" id="reg-dob"/></div>
@@ -1012,7 +1032,27 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
       </div>
       <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" type="text" id="reg-hosp-contact" placeholder="Dr. Name / Admin Name"/></div>
       <div class="form-group"><label class="form-label">Official Email *</label><input class="form-control" type="email" id="reg-hosp-email" placeholder="admin@hospital.com"/></div>
-      <div class="form-group"><label class="form-label">Phone Number</label><input class="form-control" type="tel" id="reg-hosp-phone" placeholder="+91 40 XXXX XXXX"/></div>
+      <div class="form-group">
+  <label class="form-label">Phone Number *</label>
+  <div style="display:flex;gap:8px">
+    <input class="form-control" type="tel" id="reg-hosp-phone" placeholder="+91 98765 43210" style="flex:1"/>
+    <button type="button" onclick="sendOTP('hospital')" id="hosp-otp-btn"
+      style="background:#085553;color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap">
+      Send OTP
+    </button>
+  </div>
+</div>
+<div class="form-group" id="hosp-otp-group" style="display:none">
+  <label class="form-label">Enter OTP *</label>
+  <div style="display:flex;gap:8px">
+    <input class="form-control" type="text" id="reg-hosp-otp" placeholder="6-digit OTP" maxlength="6" style="flex:1;letter-spacing:4px;font-size:1.1rem;font-weight:600"/>
+    <button type="button" onclick="verifyOTP('hospital')" id="hosp-verify-btn"
+      style="background:#0B7A75;color:#fff;border:none;border-radius:10px;padding:0 16px;font-size:.82rem;font-weight:600;cursor:pointer">
+      Verify
+    </button>
+  </div>
+  <div id="hosp-otp-status" style="font-size:.78rem;margin-top:6px;color:#6B7280"></div>
+</div>
       <div class="form-group"><label class="form-label">Password *</label><input class="form-control" type="password" id="reg-hosp-password" placeholder="Min 8 chars, 1 uppercase, 1 number"/></div>
     </div>
 
@@ -1885,7 +1925,7 @@ async function handleRegister() {
 
       if (!firstName || !email || !password) { showToast('Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (password !== confirmPw) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
-      if (password.length < 8) { showToast('Password must be at least 8 characters'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+      if (mobile && !otpVerified.patient) { showToast('Please verify your mobile number with OTP'); btn.textContent='Create Account →'; btn.disabled=false; return; }
 
       const { data: existing } = await _sb.from('patients').select('id').eq('email', email.toLowerCase()).maybeSingle();
       if (existing) { showToast('Email already registered. Please sign in.'); btn.textContent='Create Account →'; btn.disabled=false; return; }
@@ -1956,7 +1996,8 @@ async function handleRegister() {
       const password = document.getElementById('reg-hosp-password')?.value || null;
 
       if (!name || !email || !password) { showToast('Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
-      if (password.length < 8) { showToast('Password must be at least 8 characters'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+      if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
+      if (phone && !otpVerified.hospital) { showToast('Please verify your phone number with OTP'); btn.textContent='Create Account →'; btn.disabled=false; return; }
 
       const { data: existing } = await _sb.from('hospitals').select('id').eq('email', email.toLowerCase()).maybeSingle();
       if (existing) { showToast('Email already registered. Please sign in.'); btn.textContent='Create Account →'; btn.disabled=false; return; }
@@ -3085,6 +3126,80 @@ function downloadReceipt(invoiceNumber, doctor, hospital, date, time, amount, pa
 
 console.log('💳 Payment integration loaded');
 console.log('⚠️ Remember to replace RAZORPAY_KEY_ID with your actual key');
+  // ── OTP VERIFICATION ──
+const otpStore    = { patient: null, hospital: null };
+const otpVerified = { patient: false, hospital: false };
+
+async function sendOTP(role) {
+  const phoneId  = role === 'patient' ? 'reg-mobile'         : 'reg-hosp-phone';
+  const groupId  = role === 'patient' ? 'patient-otp-group'  : 'hosp-otp-group';
+  const btnId    = role === 'patient' ? 'patient-otp-btn'    : 'hosp-otp-btn';
+  const statusId = role === 'patient' ? 'patient-otp-status' : 'hosp-otp-status';
+
+  const phone = document.getElementById(phoneId)?.value.trim();
+  if (!phone || phone.length < 10) { showToast('Please enter a valid mobile number first'); return; }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  otpStore[role]    = otp;
+  otpVerified[role] = false;
+
+  document.getElementById(groupId).style.display = 'block';
+  const btn = document.getElementById(btnId);
+  btn.disabled = true;
+
+  let countdown = 30;
+  const timer = setInterval(() => {
+    btn.textContent = `Resend (${countdown}s)`;
+    countdown--;
+    if (countdown < 0) {
+      clearInterval(timer);
+      btn.disabled = false;
+      btn.textContent = 'Resend OTP';
+      btn.style.background = '#085553';
+    }
+  }, 1000);
+
+  // ⚠️ Replace with your Fast2SMS key from fast2sms.com (free for India)
+  const FAST2SMS_KEY = 'C9Nv14k6Zx3qpsun80WVePAlIQLXzKwthD7dMoyUEjFTfGgrSJrItHdx36Q0yVhvukiWT752mPgAX1GD';
+
+  if (FAST2SMS_KEY !== 'C9Nv14k6Zx3qpsun80WVePAlIQLXzKwthD7dMoyUEjFTfGgrSJrItHdx36Q0yVhvukiWT752mPgAX1GD') {
+    try {
+      await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_KEY}&message=Your+Welleni+OTP+is+${otp}.+Valid+for+5+minutes.&language=english&route=q&numbers=${phone.replace(/\D/g,'')}`, { method: 'GET' });
+      document.getElementById(statusId).innerHTML = `<span style="color:#085553">✓ OTP sent to ${phone}</span>`;
+    } catch(e) {
+      document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">SMS failed. Check your API key.</span>`;
+    }
+  } else {
+    // DEV MODE — shows OTP on screen (remove in production)
+    document.getElementById(statusId).innerHTML =
+      `<span style="color:#085553">✓ OTP:</span>
+       <span style="background:#F0FDFA;border:1px solid #99F6E4;border-radius:6px;padding:2px 10px;font-weight:700;color:#085553;letter-spacing:2px">${otp}</span>
+       <span style="color:#9CA3AF;font-size:.72rem"> (Add Fast2SMS key to send real SMS)</span>`;
+  }
+}
+
+function verifyOTP(role) {
+  const inputId  = role === 'patient' ? 'reg-patient-otp'    : 'reg-hosp-otp';
+  const statusId = role === 'patient' ? 'patient-otp-status' : 'hosp-otp-status';
+  const btnId    = role === 'patient' ? 'patient-verify-btn' : 'hosp-verify-btn';
+
+  const entered = document.getElementById(inputId)?.value.trim();
+  if (!otpStore[role]) { showToast('Please request an OTP first'); return; }
+
+  if (entered === otpStore[role]) {
+    otpVerified[role] = true;
+    document.getElementById(statusId).innerHTML = '<span style="color:#16A34A;font-weight:600">✅ Mobile number verified!</span>';
+    document.getElementById(inputId).disabled = true;
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.textContent = 'Verified ✓';
+    btn.style.background = '#16A34A';
+  } else {
+    document.getElementById(statusId).innerHTML = '<span style="color:#DC2626">❌ Incorrect OTP. Try again.</span>';
+    document.getElementById(inputId).value = '';
+    document.getElementById(inputId).focus();
+  }
+}
 </script>
 
 </body>
