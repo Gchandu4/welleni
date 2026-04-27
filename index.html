@@ -1791,8 +1791,35 @@ const DB = {
 
 let currentUser = null;
 
-// Init DB on load
-DB.init().catch(e => console.error('DB init failed:', e));
+// Init DB on load — then restore session and redirect if logged in
+DB.init().then(() => {
+  const raw = localStorage.getItem('welleni_session');
+  if (!raw) return;
+
+  try {
+    const session = JSON.parse(raw);
+    const user = session.user || session;
+
+    // Check if session is expired
+    if (session.expiresAt && Date.now() > session.expiresAt) {
+      localStorage.removeItem('welleni_session');
+      return;
+    }
+
+    // Redirect based on role
+    if (user.role === 'patient') {
+      goPage('page-patient');
+      loadPatientDash(user);
+    } else if (user.role === 'hospital') {
+      goPage('pagwelltal');
+      loadHospitalDash(user);
+    }
+
+  } catch(e) {
+    localStorage.removeItem('welleni_session');
+  }
+
+}).catch(e => console.error('DB init failed:', e));
 
 // ── REGISTRATION (Supabase direct) ──
 async function handleRegister() {
