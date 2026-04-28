@@ -1481,18 +1481,117 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
     </div>
 
     <!-- SETTINGS -->
-    <div class="dash-panel" id="h-settings">
-      <div class="dash-header"><div class="dash-title">Hospital Settings</div><div class="dash-sub">Manage your hospital's information on Welleni</div></div>
-      <div class="dash-card hosp-form">
-        <div class="dash-card-title">Hospital Information</div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Hospital Name</label><input class="form-control" value="Apollo Hospitals"/></div><div class="form-group"><label class="form-label">Registration No.</label><input class="form-control" value="MCI-HYD-2024-00123"/></div></div>
-        <div class="form-group"><label class="form-label">Address</label><input class="form-control" value="Film Nagar, Jubilee Hills, Hyderabad — 500033"/></div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Contact Number</label><input class="form-control" value="+91 40 2360 7777"/></div><div class="form-group"><label class="form-label">Emergency Line</label><input class="form-control" value="+91 40 2360 0000"/></div></div>
-        <div class="form-group"><label class="form-label">Specialties Available</label><input class="form-control" value="Cardiology, Orthopaedics, Neurology, General Medicine, Dermatology"/></div>
-        <div class="form-group"><label class="form-label">Total Beds</label><input class="form-control" type="number" value="52"/></div>
-        <button class="form-btn" style="width:auto;padding:12px 28px" onclick="showToast('Hospital settings saved!')">Save Changes</button>
+    <!-- SETTINGS / EDIT PROFILE -->
+<div class="dash-panel" id="h-settings">
+  <div class="dash-header">
+    <div class="dash-title">Hospital Settings</div>
+    <div class="dash-sub">Edit and update your hospital profile on Welleni</div>
+  </div>
+
+  <!-- Profile card -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+      <div style="width:64px;height:64px;background:#085553;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🏥</div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:#111827" id="edit-hosp-display-name">Hospital Name</div>
+        <div style="font-size:.82rem;color:#6B7280" id="edit-hosp-display-email">email@hospital.com</div>
+        <div style="font-size:.78rem;color:#085553;font-weight:600;margin-top:2px" id="edit-hosp-display-city">City</div>
       </div>
     </div>
+
+    <!-- Basic Info -->
+    <div class="dash-card-title" style="margin-bottom:14px">🏥 Basic Information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Hospital Name *</label>
+        <input class="form-control" id="edit-hosp-name" placeholder="Hospital name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Registration No.</label>
+        <input class="form-control" id="edit-hosp-regno" placeholder="MCI-HYD-XXXX"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <input class="form-control" id="edit-hosp-city" placeholder="Hyderabad"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pincode</label>
+        <input class="form-control" id="edit-hosp-pincode" placeholder="500001"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full Address</label>
+      <input class="form-control" id="edit-hosp-address" placeholder="Street, Area, City"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Contact Person</label>
+        <input class="form-control" id="edit-hosp-contact" placeholder="Dr. Name / Admin Name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-control" id="edit-hosp-phone" placeholder="+91 98765 43210"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-control" id="edit-hosp-email" type="email" placeholder="hospital@email.com"/>
+    </div>
+  </div>
+
+  <!-- Medical Info -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-title" style="margin-bottom:14px">🩺 Medical Details</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Total Beds</label>
+        <input class="form-control" id="edit-hosp-beds" type="number" placeholder="100"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emergency Line</label>
+        <input class="form-control" id="edit-hosp-emergency" placeholder="+91 40 XXXX 0000"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Specialties Available</label>
+      <input class="form-control" id="edit-hosp-specialties" placeholder="Cardiology, Orthopaedics, Neurology..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">About Hospital</label>
+      <textarea class="form-control" id="edit-hosp-about" rows="3" placeholder="Brief description about your hospital..." style="resize:vertical"></textarea>
+    </div>
+  </div>
+
+  <!-- Change Password -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-title" style="margin-bottom:14px">🔒 Change Password</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input class="form-control" id="edit-hosp-newpw" type="password" placeholder="Min 8 characters"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input class="form-control" id="edit-hosp-confirmpw" type="password" placeholder="Repeat new password"/>
+      </div>
+    </div>
+    <div style="font-size:.78rem;color:#6B7280">Leave blank to keep current password</div>
+  </div>
+
+  <!-- Save Button -->
+  <div style="display:flex;gap:12px;align-items:center">
+    <button class="form-btn" style="width:auto;padding:12px 32px" id="save-hosp-btn" onclick="saveHospitalProfile()">
+      💾 Save Changes
+    </button>
+    <button style="padding:12px 24px;background:none;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#6B7280;cursor:pointer" onclick="loadHospitalProfileForm()">
+      ↺ Reset
+    </button>
+    <div id="save-hosp-status" style="font-size:.85rem;color:#085553;font-weight:600"></div>
+  </div>
+
+</div>
 
   </div><!-- /dash-main -->
 </div><!-- /dash-wrap -->
@@ -1545,6 +1644,7 @@ function switchLoginTab(type,btn){
 
 // ── PATIENT DASHBOARD PANELS ──
 function showPanel(id,btn){
+  if (id === 'h-settings') loadHospitalProfileForm();
   document.querySelectorAll('#page-patient .dash-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(btn){document.querySelectorAll('#page-patient .sidebar-item').forEach(s=>s.classList.remove('active'));btn.classList.add('active');}
@@ -3201,6 +3301,101 @@ function verifyOTP(role) {
     document.getElementById(inputId).value = '';
     document.getElementById(inputId).focus();
   }
+}
+  // ── HOSPITAL EDIT PROFILE ──
+
+function loadHospitalProfileForm() {
+  const raw = localStorage.getItem('welleni_session');
+  if (!raw) return;
+  const hosp = JSON.parse(raw).user || JSON.parse(raw);
+
+  // Fill all fields with current data
+  document.getElementById('edit-hosp-name').value        = hosp.name || '';
+  document.getElementById('edit-hosp-regno').value       = hosp.regNo || '';
+  document.getElementById('edit-hosp-city').value        = hosp.city || '';
+  document.getElementById('edit-hosp-pincode').value     = hosp.pincode || '';
+  document.getElementById('edit-hosp-address').value     = hosp.address || '';
+  document.getElementById('edit-hosp-contact').value     = hosp.contactPerson || '';
+  document.getElementById('edit-hosp-phone').value       = hosp.phone || '';
+  document.getElementById('edit-hosp-email').value       = hosp.email || '';
+  document.getElementById('edit-hosp-beds').value        = hosp.totalBeds || '';
+  document.getElementById('edit-hosp-emergency').value   = hosp.emergencyLine || '';
+  document.getElementById('edit-hosp-specialties').value = hosp.specialties || '';
+  document.getElementById('edit-hosp-about').value       = hosp.about || '';
+
+  // Update profile card display
+  document.getElementById('edit-hosp-display-name').textContent  = hosp.name || 'Hospital Name';
+  document.getElementById('edit-hosp-display-email').textContent = hosp.email || '';
+  document.getElementById('edit-hosp-display-city').textContent  = hosp.city || '';
+}
+
+async function saveHospitalProfile() {
+  const btn    = document.getElementById('save-hosp-btn');
+  const status = document.getElementById('save-hosp-status');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+  status.textContent = '';
+
+  const raw  = localStorage.getItem('welleni_session');
+  const hosp = raw ? (JSON.parse(raw).user || JSON.parse(raw)) : null;
+  if (!hosp?.id) { showToast('Session expired. Please login again.'); return; }
+
+  const name        = document.getElementById('edit-hosp-name').value.trim();
+  const regNo       = document.getElementById('edit-hosp-regno').value.trim();
+  const city        = document.getElementById('edit-hosp-city').value.trim();
+  const pincode     = document.getElementById('edit-hosp-pincode').value.trim();
+  const address     = document.getElementById('edit-hosp-address').value.trim();
+  const contactPerson = document.getElementById('edit-hosp-contact').value.trim();
+  const phone       = document.getElementById('edit-hosp-phone').value.trim();
+  const email       = document.getElementById('edit-hosp-email').value.trim();
+  const totalBeds   = document.getElementById('edit-hosp-beds').value.trim();
+  const emergencyLine = document.getElementById('edit-hosp-emergency').value.trim();
+  const specialties = document.getElementById('edit-hosp-specialties').value.trim();
+  const about       = document.getElementById('edit-hosp-about').value.trim();
+  const newPw       = document.getElementById('edit-hosp-newpw').value;
+  const confirmPw   = document.getElementById('edit-hosp-confirmpw').value;
+
+  if (!name) { showToast('Hospital name is required'); btn.textContent='💾 Save Changes'; btn.disabled=false; return; }
+  if (newPw && newPw.length < 8) { showToast('Password must be at least 8 characters'); btn.textContent='💾 Save Changes'; btn.disabled=false; return; }
+  if (newPw && newPw !== confirmPw) { showToast('Passwords do not match'); btn.textContent='💾 Save Changes'; btn.disabled=false; return; }
+
+  // Build update object
+  const updates = { name, regNo, city, pincode, address, contactPerson, phone, email, totalBeds, emergencyLine, specialties, about };
+
+  // Hash and add new password if provided
+  if (newPw) updates.password = await hashPw(newPw);
+
+  const { error } = await _sb.from('hospitals').update(updates).eq('id', hosp.id);
+
+  if (error) {
+    showToast('Save failed: ' + error.message);
+    btn.textContent = '💾 Save Changes';
+    btn.disabled = false;
+    return;
+  }
+
+  // Update localStorage session with new data
+  const updatedHosp = { ...hosp, ...updates };
+  delete updatedHosp.password;
+  DB.setSession(updatedHosp, 'hospital');
+
+  // Update nav and sidebar names
+  document.getElementById('hosp-nav-name').textContent      = name;
+  document.getElementById('hosp-sidebar-name').textContent  = name;
+  document.getElementById('hosp-overview-name').textContent = name;
+  document.getElementById('edit-hosp-display-name').textContent  = name;
+  document.getElementById('edit-hosp-display-email').textContent = email;
+  document.getElementById('edit-hosp-display-city').textContent  = city;
+
+  // Clear password fields
+  document.getElementById('edit-hosp-newpw').value    = '';
+  document.getElementById('edit-hosp-confirmpw').value = '';
+
+  status.textContent = '✅ Saved successfully!';
+  setTimeout(() => status.textContent = '', 3000);
+  btn.textContent = '💾 Save Changes';
+  btn.disabled = false;
+  showToast('Hospital profile updated successfully!');
 }
 </script>
 
