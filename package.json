@@ -1,10 +1,10 @@
 {
   "name": "welleni-worker",
   "version": "1.0.0",
-  "description": "Welleni — Cloudflare Workers deployment",
+  "description": "Welleni - Cloudflare Workers deployment",
   "private": true,
   "scripts": {
-    "build": "vite build && wrangler deploy",
+    "build": "vite build",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
