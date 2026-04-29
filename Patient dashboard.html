@@ -1,0 +1,205 @@
+<div id="page-patient" class="page">
+<nav id="patient-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+  <div class="nav-inner" style="max-width:100%;padding:0 28px">
+    <a class="nav-logo" style="cursor:default"><svg viewBox="0 0 64 70" style="width:36px;height:40px"><polygon points="32,4 58,18 58,52 32,66 6,52 6,18" fill="#0B7A75"/><rect x="28" y="22" width="8" height="26" rx="3" fill="white"/><rect x="19" y="31" width="26" height="8" rx="3" fill="white"/></svg><span class="logo-text"><span style="font-weight:500;color:#9FE1CB">Well</span><span style="font-weight:400">eni</span></span></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:.85rem;color:var(--text-mid)">Welcome, <strong id="patient-name"></strong> 👋</div>
+      <button onclick="signOut()" class="nav-btn-outline" style="padding:7px 16px!important;font-size:.82rem!important;background:transparent;color:var(--teal);border:1.5px solid var(--teal);border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Patient Header (visible only on mobile) -->
+<div class="mobile-patient-header" style="display:none">
+  <div class="mobile-patient-info">
+    <div class="mobile-patient-avatar">👤</div>
+    <div>
+      <div class="mobile-patient-name" id="mobile-patient-name">Patient</div>
+      <div class="mobile-patient-id" id="mobile-patient-id">ID: —</div>
+    </div>
+  </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+    <span>☰</span> Menu
+  </button>
+</div>
+
+<div class="dash-wrap">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div style="padding:12px 12px 4px;display:flex;align-items:center;gap:10px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--foam);border:2px solid var(--foam);display:flex;align-items:center;justify-content:center;font-size:1.1rem">👤</div>
+        <div><div style="font-weight:600;font-size:.85rem" id="sidebar-patient-name"></div><div style="font-size:.72rem;color:var(--text-light)" id="sidebar-patient-id">—</div></div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <button class="sidebar-item active" onclick="showPanel('p-overview',this)"><span class="si-icon">🏠</span> Overview</button>
+      <button class="sidebar-item" onclick="showPanel('p-appointments',this)"><span class="si-icon">📅</span> Appointments <span class="sidebar-badge" id="appt-badge" style="display:none"></span></button>
+      <button class="sidebar-item" onclick="showPanel('p-records',this)"><span class="si-icon">📋</span> Health Records</button>
+      <button class="sidebar-item" onclick="showPanel('p-medications',this)"><span class="si-icon">💊</span> Medications</button>
+      <button class="sidebar-item" onclick="showPanel('p-book',this)"><span class="si-icon">🔍</span> Book Appointment</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Health</div>
+      <button class="sidebar-item" onclick="showPanel('p-vitals',this)"><span class="si-icon">❤️</span> Vitals & Reports</button>
+      <button class="sidebar-item" onclick="showPanel('p-emergency',this)"><span class="si-icon">🚨</span> Emergency SOS</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <button class="sidebar-item" onclick="showPanel('p-profile',this)"><span class="si-icon">⚙️</span> My Profile</button>
+    </div>
+  </div>
+  <div class="dash-main">
+
+    <!-- OVERVIEW -->
+    <div class="dash-panel active" id="p-overview">
+      <div class="dash-header"><div class="dash-title" id="dash-greeting">Good morning</div><div class="dash-sub" id="dash-date-sub">Here's your health summary</div></div>
+      <div class="dash-grid">
+        <div class="dash-stat-card"><div class="dsc-icon">📅</div><div class="dsc-num" id="stat-upcoming">0</div><div class="dsc-lbl">Upcoming Appointments</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">📋</div><div class="dsc-num" id="stat-records">0</div><div class="dsc-lbl">Health Records</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">💊</div><div class="dsc-num" id="stat-meds">0</div><div class="dsc-lbl">Active Medications</div></div>
+        <div class="dash-stat-card"><div class="dsc-icon">🩺</div><div class="dsc-num">0</div><div class="dsc-lbl">Total Visits</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="dash-card">
+          <div class="dash-card-title">Upcoming Appointments <a onclick="showPanel('p-appointments',null)">View All</a></div>
+          <div id="overview-upcoming"></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">Today's Medications</div>
+          <div id="overview-meds"></div>
+        </div>
+      </div>
+      <div class="dash-card" style="margin-top:0">
+        <div class="dash-card-title">Recent Health Records <a onclick="showPanel('p-records',null)">View All</a></div>
+        <div id="overview-records"></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dash-panel" id="p-appointments">
+      <div class="dash-header"><div class="dash-title">My Appointments</div><div class="dash-sub">All your past and upcoming appointments</div></div>
+      <div class="dash-card"><div class="dash-card-title">Upcoming</div><div id="appt-upcoming"><div style="color:var(--text-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <div class="dash-card"><div class="dash-card-title">Past Visits</div><div id="appt-past"><div style="color:var(--text-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <button class="btn-primary" onclick="showPanel('p-book',null)">+ Book New Appointment</button>
+    </div>
+
+    <!-- RECORDS -->
+    <div class="dash-panel" id="p-records">
+      <div class="dash-header"><div class="dash-title">Health Records</div><div class="dash-sub">Your complete medical history</div></div>
+      <div class="dash-card"><div class="dash-card-title">All Records</div><div id="records-list"><div style="color:var(--text-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <label class="btn-secondary" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px">
+        📤 Upload Record
+        <input type="file" style="display:none" onchange="uploadRecord(this)"/>
+      </label>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div class="dash-panel" id="p-medications">
+      <div class="dash-header"><div class="dash-title">My Medications</div><div class="dash-sub">Active prescriptions and reminder schedule</div></div>
+      <div class="dash-card"><div class="dash-card-title">Active Medications</div><div id="medications-list"><div style="color:var(--text-light);font-size:.85rem;padding:12px 0">Loading...</div></div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Add Medication</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <input class="form-control" id="new-med-name" placeholder="Medicine name"/>
+          <input class="form-control" id="new-med-dose" placeholder="Dose (e.g. 1 tablet)"/>
+          <input class="form-control" id="new-med-freq" placeholder="Frequency"/>
+          <input class="form-control" id="new-med-time" placeholder="Time (e.g. 8:00 AM)"/>
+        </div>
+        <button class="btn-primary" style="padding:10px 20px;font-size:.88rem" onclick="addMedication()">+ Add Medication</button>
+      </div>
+    </div>
+
+    <!-- BOOK -->
+    <div class="dash-panel" id="p-book">
+      <div class="dash-header"><div class="dash-title">Book Appointment</div><div class="dash-sub">Find a specialist and book a slot instantly</div></div>
+      <!-- Location bar -->
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card-title">🔍 Find Doctors Near You</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:#F0FDFA;border:1px solid #99F6E4;border-radius:10px;padding:12px 14px;">
+          <span style="font-size:1.2rem">📍</span>
+          <span id="loc-text" style="font-size:.9rem;color:#085553;flex:1;font-weight:500">Detecting your location...</span>
+          <button onclick="getUserLocation()" style="background:#085553;color:#CCFBF1;border:none;border-radius:8px;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer">📡 Refresh</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px">
+          <input class="form-control" id="doc-search" placeholder="🔍 Specialty or doctor name" oninput="filterDoctors()"/>
+          <select class="form-control" id="doc-specialty" onchange="searchNearbyHospitals()">
+            <option value="hospital">All Hospitals</option>
+            <option value="cardiologist">Cardiology</option>
+            <option value="orthopedic">Orthopaedics</option>
+            <option value="neurologist">Neurology</option>
+            <option value="dermatologist">Dermatology</option>
+            <option value="pediatrician">Paediatrics</option>
+            <option value="dentist">Dentist</option>
+            <option value="physiotherapist">Physiotherapy</option>
+          </select>
+          <button class="btn-primary" style="height:46px;border-radius:10px;padding:0 20px" onclick="searchNearbyHospitals()">Search</button>
+        </div>
+        <div id="loc-status" style="display:none;text-align:center;padding:16px;color:#6B7280;font-size:.88rem">⏳ Searching nearby...</div>
+      </div>
+      <!-- Results -->
+      <div class="book-grid" id="nearby-results">
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
+        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
+      </div>
+    </div>
+
+    <!-- VITALS -->
+    <div class="dash-panel" id="p-vitals">
+      <div class="dash-header"><div class="dash-title">Vitals & Reports</div><div class="dash-sub">Your latest health measurements</div></div>
+      <div class="vitals-grid" style="margin-bottom:20px">
+        <div class="vital-card"><div class="vital-icon">❤️</div><div class="vital-val" id="stat-heartrate">72 bpm</div><div class="vital-lbl">Heart Rate</div></div>
+        <div class="vital-card"><div class="vital-icon">🩸</div><div class="vital-val" id="stat-bp">120/80</div><div class="vital-lbl">Blood Pressure</div></div>
+        <div class="vital-card"><div class="vital-icon">🌡️</div><div class="vital-val" id="stat-temp">36.8°C</div><div class="vital-lbl">Body Temp</div></div>
+        <div class="vital-card"><div class="vital-icon">💉</div><div class="vital-val" id="stat-sugar">98 mg/dL</div><div class="vital-lbl">Blood Sugar</div></div>
+        <div class="vital-card"><div class="vital-icon">⚖️</div><div class="vital-val" id="stat-weight">72 kg</div><div class="vital-lbl">Weight</div></div>
+        <div class="vital-card"><div class="vital-icon">🫁</div><div class="vital-val" id="stat-spo2">98%</div><div class="vital-lbl">SpO2</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Update Vitals</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+          <input class="form-control" id="v-hr" placeholder="Heart Rate (e.g. 72 bpm)"/>
+          <input class="form-control" id="v-bp" placeholder="BP (e.g. 120/80)"/>
+          <input class="form-control" id="v-temp" placeholder="Temp (e.g. 36.8°C)"/>
+          <input class="form-control" id="v-sugar" placeholder="Sugar (e.g. 98 mg/dL)"/>
+          <input class="form-control" id="v-weight" placeholder="Weight (e.g. 72 kg)"/>
+          <input class="form-control" id="v-spo2" placeholder="SpO2 (e.g. 98%)"/>
+        </div>
+        <button class="btn-primary" style="padding:10px 20px;font-size:.88rem" onclick="saveVitals()">💾 Save Vitals</button>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="dash-panel" id="p-emergency">
+      <div class="dash-header"><div class="dash-title">Emergency SOS</div><div class="dash-sub">One-tap emergency response system</div></div>
+      <div class="dash-card" style="text-align:center;padding:48px">
+        <div style="position:relative;display:inline-block;margin-bottom:28px">
+          <div style="position:absolute;inset:-20px;border-radius:50%;border:2px solid rgba(220,38,38,.3);animation:sos-ring 2s ease-out infinite"></div>
+          <div style="position:absolute;inset:-35px;border-radius:50%;border:2px solid rgba(220,38,38,.15);animation:sos-ring 2s .5s ease-out infinite"></div>
+          <button onclick="triggerSOS()" style="width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#FF6B6B,#E24B4A 70%);border:none;cursor:pointer;font-weight:800;font-size:1.5rem;color:white;box-shadow:0 0 0 8px rgba(220,38,38,.15),0 8px 32px rgba(220,38,38,.4);position:relative;z-index:1;transition:transform .2s" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">SOS</button>
+        </div>
+        <div style="font-size:1rem;font-weight:600;color:var(--body-text);margin-bottom:8px">Tap SOS to trigger emergency response</div>
+        <div style="font-size:.85rem;color:var(--text-light)">Your family, nearby hospitals, and ambulance will be notified instantly.</div>
+        <div id="sos-log" style="margin-top:20px;text-align:left;max-width:400px;margin-left:auto;margin-right:auto"></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="dash-panel" id="p-profile">
+      <div class="dash-header"><div class="dash-title">My Profile</div><div class="dash-sub">Manage your personal and medical information</div></div>
+      <div class="dash-card" id="profile-form-section">
+        <div class="dash-card-title">Personal Information</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">First Name</label><input class="form-control" id="prof-fname" value=""/></div><div class="form-group"><label class="form-label">Last Name</label><input class="form-control" id="prof-lname" value=""/></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Date of Birth</label><input class="form-control" type="date" id="prof-dob" value=""/></div><div class="form-group"><label class="form-label">Blood Group</label><select class="form-control" id="prof-blood"><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div></div>
+        <div class="form-group"><label class="form-label">Mobile</label><input class="form-control" id="prof-mobile" value=""/></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="prof-email" value=""/></div>
+        <div class="form-group"><label class="form-label">Known Allergies</label><input class="form-control" id="prof-allergies" value=""/></div>
+        <div class="form-group"><label class="form-label">Emergency Contact</label><input class="form-control" id="prof-emergency" value=""/></div>
+        <button class="form-btn" style="width:auto;padding:12px 28px" onclick="saveProfile()">💾 Save to Database</button>
+      </div>
+    </div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dash-wrap -->
+</div><!-- /page-patient -->
