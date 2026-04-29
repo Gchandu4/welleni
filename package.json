@@ -4,6 +4,7 @@
   "description": "Welleni — Cloudflare Workers deployment",
   "private": true,
   "scripts": {
+    "build":  "wrangler deploy",
     "dev":    "wrangler dev",
     "deploy": "wrangler deploy",
     "deploy:staging":    "wrangler deploy --env staging",
@@ -11,6 +12,6 @@
     "tail":   "wrangler tail"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.0.0"
   }
 }
