@@ -1,5 +1,6 @@
+// ── Block 1: Core ──
 // ── SUPABASE CLIENT ──
-// Keys loaded from config.js
+// Keys from config.js
 
 const _sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
@@ -165,7 +166,7 @@ async function handleCTA(btn){
         
         // Open WhatsApp as backup
         const message = `🏥 NEW DEMO REQUEST\n\nHospital: ${hospitalName}\nMobile: ${mobile}\nTime: ${new Date().toLocaleString('en-IN')}\n\nPlease contact within 24 hours.`;
-        window.open(`https://wa.me/917032527095?text=${encodeURIComponent(message)}`, '_blank');
+        window.open(`https://wa.me/${CONFIG.WA_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
         return;
       }
       throw error;
@@ -1206,9 +1207,8 @@ setTimeout(()=>{
   const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 },200);
-</script>
 
-<script>
+// ── Block 2: Session restore ──
 // Set all dynamic name elements from session immediately on load
 (function() {
   try {
@@ -1237,30 +1237,8 @@ setTimeout(()=>{
     }
   } catch(e) {}
 })();
-</script>
 
-<!-- ══════════════════════════════════════
-     PAYMENT MODAL
-══════════════════════════════════════ -->
-<div id="payment-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px">
-  <div style="background:var(--white);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3)">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)">
-      <div style="font-weight:700;font-size:1.1rem;color:var(--body-text)">💳 Payment</div>
-      <button onclick="closePaymentModal()" style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--text-light);line-height:1">×</button>
-    </div>
-    <div style="padding:24px">
-      <div id="payment-details"></div>
-      <button id="pay-button" class="btn-primary" style="width:100%;padding:14px;margin-top:20px;font-size:1rem">
-        Proceed to Pay
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     PAYMENT INTEGRATION SCRIPT
-══════════════════════════════════════ -->
-<script>
+// ── Block 3: Hospital profile ──
 // ═══════════════════════════════════════════════════════════════
 // PAYMENT INTEGRATION - Razorpay
 // ═══════════════════════════════════════════════════════════════
