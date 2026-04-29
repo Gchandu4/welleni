@@ -1,4 +1,0 @@
-routes = [
-  { pattern = "welleni.com/*",     zone_name = "welleni.com" },
-  { pattern = "www.welleni.com/*", zone_name = "welleni.com" },
-]
