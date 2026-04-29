@@ -4,13 +4,10 @@
   "description": "Welleni — Cloudflare Workers deployment",
   "private": true,
   "scripts": {
-<<<<<<< HEAD
     "build":  "vite build",
     "dev":    "wrangler dev",
-=======
     "build": "wrangler deploy",
     "dev": "wrangler dev",
->>>>>>> a759fff (Add Vite dependency)
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
