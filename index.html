@@ -5,40 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Welleni - Connecting to better health. Every hospital. Every patient. One platform.">
   <title>Welleni — Connecting to better health</title>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- ⚠️ Styles -->
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- ⚠️ Config MUST be loaded before other scripts so API keys are available -->
-  <script src="config.js"></script>
-
-  <!-- Supabase -->
+  <link rel="stylesheet" href="styles.min.css">
+  <script src="config.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Razorpay -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-  <!--
-    Google Maps Places API
-    ⚠️  IMPORTANT: Restrict CONFIG.GOOGLE_MAPS_API_KEY to your domain(s)
-        in Google Cloud Console → APIs & Services → Credentials.
-        The key below is loaded from config.js via an inline script.
-  -->
   <script>
-    // Dynamically inject Google Maps script using key from config.js
-    (function() {
-      const s = document.createElement('script');
-      s.src = 'https://maps.googleapis.com/maps/api/js?key=' + CONFIG.GOOGLE_MAPS_API_KEY + '&libraries=places';
-      s.defer = true;
-      document.head.appendChild(s);
-    })();
+    (function(){var s=document.createElement('script');s.src='https://maps.googleapis.com/maps/api/js?key='+CONFIG.GOOGLE_MAPS_API_KEY+'&libraries=places';s.defer=true;document.head.appendChild(s);})();
   </script>
 </head>
-<body>
 <body>
 
 <div id="toast" class="toast"></div>
@@ -1101,8 +1077,28 @@
 </div><!-- /pagwelltal -->
 
 
-<!-- ⚠️ config.js is already loaded in <head>; script.js uses CONFIG global -->
-<script src="script.js"></script>
 
+<!-- ══════════════════════════════════════
+     PAYMENT MODAL
+══════════════════════════════════════ -->
+<div id="payment-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:1.1rem;color:var(--body-text)">💳 Payment</div>
+      <button onclick="closePaymentModal()" style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--text-light);line-height:1">×</button>
+    </div>
+    <div style="padding:24px">
+      <div id="payment-details"></div>
+      <button id="pay-button" class="btn-primary" style="width:100%;padding:14px;margin-top:20px;font-size:1rem">
+        Proceed to Pay
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAYMENT INTEGRATION SCRIPT
+══════════════════════════════════════ -->
+<script src="script.min.js"></script>
 </body>
 </html>
