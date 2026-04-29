@@ -50,4 +50,3 @@ export default {
     return response;
   }
 };
-Copy to clipboard
