@@ -1,0 +1,36 @@
+<div id="page-login" class="page">
+<nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')"><svg viewBox="0 0 64 70" style="width:36px;height:40px"><polygon points="32,4 58,18 58,52 32,66 6,52 6,18" fill="#0B7A75"/><rect x="28" y="22" width="8" height="26" rx="3" fill="white"/><rect x="19" y="31" width="26" height="8" rx="3" fill="white"/></svg><span class="logo-text"><span style="font-weight:500;color:#9FE1CB">Well</span><span style="font-weight:400">eni</span></span></a>
+    <ul class="nav-links"><li><button onclick="goPage('page-register')" class="nav-btn">Create Account</button></li></ul>
+  </div>
+</nav>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo"><svg viewBox="0 0 64 70" style="width:44px;height:50px"><polygon points="32,4 58,18 58,52 32,66 6,52 6,18" fill="#0B7A75"/><rect x="28" y="22" width="8" height="26" rx="3" fill="white"/><rect x="19" y="31" width="26" height="8" rx="3" fill="white"/></svg><span class="logo-text" style="font-size:1.7rem"><span style="font-weight:500;color:#9FE1CB">Well</span><span style="font-weight:400">eni</span></span></div>
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-sub">Sign in to your Welleni account</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchLoginTab('patient',this)">👤 Patient</button>
+      <button class="auth-tab" onclick="switchLoginTab('hospital',this)">🏥 Hospital</button>
+    </div>
+
+    <div id="login-patient">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" placeholder="you@email.com" id="login-id"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="login-pw"/></div>
+      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <button class="form-btn" id="patient-login-btn" onclick="this.style.opacity='0.7';this.textContent='Opening…';handleLogin('patient')">Sign In as Patient →</button>
+    </div>
+
+    <div id="login-hospital" style="display:none">
+      <div class="form-group"><label class="form-label">Hospital Email</label><input class="form-control" type="email" placeholder="admin@hospital.com" id="hosp-login-id"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="hosp-login-pw"/></div>
+      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <button class="form-btn" id="hosp-login-btn" onclick="this.style.opacity='0.7';this.textContent='Signing in…';handleLogin('hospital')">Sign In as Hospital →</button>
+    </div>
+
+    <div class="auth-switch">Don't have an account? <a onclick="goPage('page-register')">Sign up here</a></div>
+  </div>
+</div>
+</div><!-- /page-login -->
