@@ -1,0 +1,234 @@
+<div id="page-landing" class="page active">
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')">
+      <div class="logo-mark"><svg viewBox="0 0 40 40" width="26" height="26" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="6" width="8" height="28" rx="3" fill="white"/><rect x="6" y="16" width="28" height="8" rx="3" fill="white"/></svg></div>
+      <div style="display:flex;flex-direction:column;gap:1px">
+        <span class="logo-text">Well<span>eni</span></span>
+        <span class="logo-tagline">Connecting to better health</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#emergency">Emergency</a></li>
+      <li><button onclick="goPage('page-login')" class="nav-btn-outline">Login</button></li>
+      <li><button onclick="goPage('page-register')" class="nav-btn">Get Started</button></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-pill"><div class="pill-dot"></div>Now live in Hyderabad — 50+ hospitals onboarded</div>
+      <h1 class="hero-title">Every hospital.<br>Every patient.<br><em>One platform.</em></h1>
+      <p class="hero-desc">Welleni connects patients with hospitals across Hyderabad for appointments, health records, follow-ups, and emergency well — all in one seamless platform.</p>
+      <div class="hero-cta">
+        <button onclick="goPage('page-register')" class="btn-primary">🏥 Get Started Free</button>
+        <button onclick="goPage('page-login')" class="btn-secondary">👤 Sign In</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">75K+</div><div class="hero-stat-label">Patients registered</div></div>
+        <div><div class="hero-stat-num">150+</div><div class="hero-stat-label">Hospitals onboarded</div></div>
+        <div><div class="hero-stat-num">&lt;3 min</div><div class="hero-stat-label">Emergency response</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div style="position:relative">
+        <div class="tilt-wrapper" id="tiltCard">
+          <div class="dashboard-card">
+            <div class="dc-header">
+              <div><div class="dc-header-title">Hospital Dashboard</div><div class="dc-header-sub">Apollo Hospitals, Jubilee Hills — Today</div></div>
+              <div class="dc-dots"><div class="dc-dot"></div><div class="dc-dot"></div><div class="dc-dot"></div></div>
+            </div>
+            <div class="dc-body">
+              <div class="dc-grid">
+                <div class="dc-stat"><div class="dc-stat-num">48</div><div class="dc-stat-lbl">Today's Appointments</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">12</div><div class="dc-stat-lbl">Beds Available</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">3</div><div class="dc-stat-lbl">Emergency Alerts</div></div>
+                <div class="dc-stat"><div class="dc-stat-num">94%</div><div class="dc-stat-lbl">Show-up Rate</div></div>
+              </div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Upcoming Appointments</div>
+              <div class="appt-item"><div class="appt-avatar" style="background:#FEF3C7">👨</div><div><div class="appt-name">Rajesh Kumar</div><div class="appt-spec">Cardiology · Dr. Rao</div></div><div class="appt-time">10:30 AM</div><div class="appt-status-dot" style="background:#34D399"></div></div>
+              <div class="appt-item"><div class="appt-avatar" style="background:#FEE2E2">👩</div><div><div class="appt-name">Priya Sharma</div><div class="appt-spec">Orthopaedics · Dr. Mehta</div></div><div class="appt-time">11:00 AM</div><div class="appt-status-dot" style="background:#34D399"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="float-badge fb-1"><div class="fb-icon">🩺</div><div class="fb-val">Digital Prescription</div><div class="fb-lbl">Sent to patient · 2 min ago</div></div>
+        <div class="float-badge fb-2"><div class="fb-icon">🚨</div><div class="fb-val">SOS Alert — 1.2 km</div><div class="fb-lbl">Ambulance dispatched ✓</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED -->
+<div class="trusted">
+  <div class="trusted-inner">
+    <div class="trusted-label">Trusted by hospitals across Hyderabad</div>
+    <div class="trusted-logos">
+      <div class="trusted-logo">Apollo Hospitals</div><div class="trusted-logo">KIMS Hospital</div>
+      <div class="trusted-logo">Yashoda Health</div><div class="trusted-logo">Well Hospitals</div>
+      <div class="trusted-logo">Sunshine Hospitals</div><div class="trusted-logo">Medicover</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head center">
+      <div class="chip">Everything You Need</div>
+      <h2 class="section-title">Healthwell, <em>completely reimagined</em></h2>
+      <p class="section-desc">From the first appointment to emergency well — Welleni handles every touchpoint between patients and hospitals.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="fc-icon">📅</div><div class="fc-title">Smart Appointment Booking</div><div class="fc-desc">Real-time specialist booking — no phone queues, no paper registers. Hospitals manage slots and no-shows automatically.</div></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="fc-icon">📋</div><div class="fc-title">Unified Health Records</div><div class="fc-desc">Every prescription, lab report, and diagnosis in one secure, searchable timeline. Digital records pushed directly to patients.</div></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="fc-icon">🔔</div><div class="fc-title">Follow-up & Prescription Tracking</div><div class="fc-desc">Automated follow-up reminders, medication schedules, and refill alerts. Post-well made effortless.</div></div>
+      <div class="feature-card reveal"><div class="fc-icon">🚑</div><div class="fc-title">Emergency & Ambulance</div><div class="fc-desc">One-tap SOS alerts family, nearby hospitals, and dispatches an ambulance with live tracking.</div></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="fc-icon">🏥</div><div class="fc-title">Hospital Operations Dashboard</div><div class="fc-desc">Schedules, records, bed count, emergency inbox, and staff roles — all in one powerful dashboard.</div></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="fc-icon">🩸</div><div class="fc-title">Blood Donor Network</div><div class="fc-desc">Donors matched to urgent blood requests by blood type and location. Manage inventory and instant alerts.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how">
+  <div class="container">
+    <div class="section-head"><div class="chip">How It Works</div><h2 class="section-title">Seamless from <em>first tap</em> to final follow-up</h2><p class="section-desc">A single connected flow for patients and hospitals.</p></div>
+    <div class="hiw-grid">
+      <div class="hiw-steps">
+        <div class="hiw-step active" onclick="setStep(0,this)"><div class="step-num">1</div><div><div class="step-title">Patient searches for a specialist</div><div class="step-desc">Filter by specialty, location, and real-time availability.</div></div></div>
+        <div class="hiw-step" onclick="setStep(1,this)"><div class="step-num">2</div><div><div class="step-title">Books appointment — instantly confirmed</div><div class="step-desc">Select a slot, confirm, and receive a booking reference with reminders.</div></div></div>
+        <div class="hiw-step" onclick="setStep(2,this)"><div class="step-num">3</div><div><div class="step-title">Hospital manages the booking</div><div class="step-desc">Live calendar with patient details before arrival.</div></div></div>
+        <div class="hiw-step" onclick="setStep(3,this)"><div class="step-num">4</div><div><div class="step-title">Doctor issues physical prescription</div><div class="step-desc">Pushed directly to patient's app. No paper.</div></div></div>
+        <div class="hiw-step" onclick="setStep(4,this)"><div class="step-num">5</div><div><div class="step-title">Automatic follow-up reminders</div><div class="step-desc">Medication and appointment reminders daily.</div></div></div>
+      </div>
+      <div class="hiw-visual">
+        <div class="hiw-screen active" id="screen-0"><div class="hs-header"><span style="font-size:1.2rem">🔍</span><div class="hs-title">Find a Hospital</div></div><div class="hs-body"><div style="background:var(--mist);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:.85rem;color:var(--text-light);margin-bottom:16px">🔍 &nbsp;Cardiology, Hyderabad...</div><div style="display:flex;flex-direction:column;gap:10px"><div style="background:var(--white);border:1.5px solid var(--foam);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--foam);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🏥</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">Apollo Hospitals</div><div style="font-size:.72rem;color:var(--text-light)">Jubilee Hills · 1.2 km · ⭐ 4.8</div></div><div style="background:var(--teal);color:white;font-size:.7rem;padding:6px 10px;border-radius:8px;font-weight:600">Book</div></div><div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:#FEF3C7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">🏨</div><div style="flex:1"><div style="font-weight:600;font-size:.85rem">KIMS Hospital</div><div style="font-size:.72rem;color:var(--text-light)">Secunderabad · 3.4 km · ⭐ 4.6</div></div><div style="background:var(--teal);color:white;font-size:.7rem;padding:6px 10px;border-radius:8px;font-weight:600">Book</div></div></div></div></div>
+        <div class="hiw-screen" id="screen-1"><div class="hs-header"><span style="font-size:1.2rem">📅</span><div class="hs-title">Book a Slot</div></div><div class="hs-body"><div style="font-size:.72rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Dr. Rao — Cardiology</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"><div style="text-align:center;padding:10px 6px;border:1.5px solid var(--teal);border-radius:10px;font-size:.75rem;font-weight:600;color:var(--teal);background:var(--foam)">10:30 AM</div><div style="text-align:center;padding:10px 6px;border:1px solid var(--border);border-radius:10px;font-size:.75rem;color:var(--text-mid)">11:00 AM</div><div style="text-align:center;padding:10px 6px;border:1px solid var(--border);border-radius:10px;font-size:.75rem;color:var(--text-mid)">3:00 PM</div></div><div style="background:var(--foam);border:1px solid var(--foam);border-radius:10px;padding:12px;margin-bottom:14px"><div style="font-size:.78rem;color:var(--teal);font-weight:600">✓ 10:30 AM · Thursday, 12 Mar · ₹600</div></div><div style="background:var(--teal);color:white;text-align:center;padding:12px;border-radius:10px;font-weight:600;font-size:.85rem">Confirm Booking →</div></div></div>
+        <div class="hiw-screen" id="screen-2"><div class="hs-header"><span style="font-size:1.2rem">📊</span><div class="hs-title">Hospital Dashboard</div></div><div class="hs-body"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"><div style="background:var(--foam);border:1px solid var(--foam);border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--teal);font-family:'Playfair Display',serif">48</div><div style="font-size:.62rem;color:var(--text-light)">Appointments</div></div><div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--amber);font-family:'Playfair Display',serif">3</div><div style="font-size:.62rem;color:var(--text-light)">Pending</div></div><div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#16A34A;font-family:'Playfair Display',serif">12</div><div style="font-size:.62rem;color:var(--text-light)">Free Beds</div></div></div><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--mist);border-radius:10px"><div style="width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0"></div><span style="font-size:.8rem;font-weight:500;flex:1">Rajesh Kumar</span><span style="font-size:.72rem;color:var(--teal);font-weight:600">10:30</span></div><div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--mist);border-radius:10px"><div style="width:7px;height:7px;border-radius:50%;background:#34D399;flex-shrink:0"></div><span style="font-size:.8rem;font-weight:500;flex:1">Priya Sharma</span><span style="font-size:.72rem;color:var(--teal);font-weight:600">11:00</span></div></div></div></div>
+        <div class="hiw-screen" id="screen-3"><div class="hs-header"><span style="font-size:1.2rem">🩺</span><div class="hs-title">Digital Prescription</div></div><div class="hs-body"><div style="border:1px solid var(--border);border-radius:12px;padding:16px"><div style="font-weight:700;font-size:.88rem;margin-bottom:4px">Dr. S. Rao — Cardiology</div><div style="font-size:.7rem;color:var(--text-light);margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)">12 Mar 2026</div><div style="font-size:.8rem;margin-bottom:6px"><span style="font-weight:600">1. Ecosprin 75mg</span> — 1 tablet daily</div><div style="font-size:.8rem;margin-bottom:12px"><span style="font-weight:600">2. Atorvastatin 10mg</span> — 1 tablet nightly</div><div style="background:var(--foam);border:1px solid var(--foam);border-radius:8px;padding:10px;font-size:.72rem;color:var(--teal)">📱 Sent to patient's Welleni app</div></div></div></div>
+        <div class="hiw-screen" id="screen-4"><div class="hs-header"><span style="font-size:1.2rem">🔔</span><div class="hs-title">Health Timeline</div></div><div class="hs-body"><div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:34px;height:34px;border-radius:50%;background:#FEF3C7;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">⏰</div><div style="background:var(--amber-pale);border:1px solid #FDE68A;border-radius:10px;padding:10px;flex:1"><div style="font-weight:600;font-size:.8rem;color:var(--amber)">Follow-up Reminder</div><div style="font-size:.72rem;color:var(--text-light)">Dr. Rao · Tomorrow 10:30 AM</div></div></div><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:34px;height:34px;border-radius:50%;background:var(--foam);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0">💊</div><div style="background:var(--foam);border:1px solid var(--foam);border-radius:10px;padding:10px;flex:1"><div style="font-weight:600;font-size:.8rem;color:var(--teal)">Medication Reminder</div><div style="font-size:.72rem;color:var(--text-light)">Ecosprin 75mg · Take now</div></div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="section" id="forwho">
+  <div class="container">
+    <div class="section-head center"><div class="chip">Built For Everyone</div><h2 class="section-title">One platform, <em>two powerful sides</em></h2></div>
+    <div class="for-who-tabs">
+      <button class="fw-tab active" onclick="switchTab('patient',this)">👤 For Patients</button>
+      <button class="fw-tab" onclick="switchTab('hospital',this)">🏥 For Hospitals</button>
+    </div>
+    <div class="fw-content active" id="fw-patient">
+      <div class="fw-card reveal"><div class="fw-icon">📅</div><div class="fw-title">Book Any Specialist Near You</div><div class="fw-desc">Search hospitals and doctors by specialty, distance, and real-time availability. Book in under 60 seconds.</div></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">🗂️</div><div class="fw-title">Your Complete Health Record</div><div class="fw-desc">Every prescription, lab report, and diagnosis stored securely. Share records instantly with any doctor.</div></div>
+      <div class="fw-card reveal"><div class="fw-icon">💊</div><div class="fw-title">Never Miss a Follow-up Again</div><div class="fw-desc">Automatic reminders for follow-up appointments and daily medications. Lab results appear instantly.</div></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">🆘</div><div class="fw-title">Emergency Help in One Tap</div><div class="fw-desc">Press SOS — family alerted, nearest hospitals notified, and ambulance dispatched with live tracking.</div></div>
+    </div>
+    <div class="fw-content" id="fw-hospital">
+      <div class="fw-card reveal"><div class="fw-icon">📊</div><div class="fw-title">End-to-End Appointment Management</div><div class="fw-desc">Live calendar across all doctors. Manage slots, cancellations, walk-ins, and no-shows from one dashboard.</div></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">👁️</div><div class="fw-title">Complete Patient Record Access</div><div class="fw-desc">View full patient history before they arrive. Issue digital prescriptions directly to the patient's app.</div></div>
+      <div class="fw-card reveal"><div class="fw-icon">🚑</div><div class="fw-title">Emergency Operations Centre</div><div class="fw-desc">Real-time emergency inbox with SOS alerts. Dispatch ambulances. Update live bed count on the map.</div></div>
+      <div class="fw-card reveal reveal-delay-1"><div class="fw-icon">📈</div><div class="fw-title">Analytics That Drive Decisions</div><div class="fw-desc">Appointment volume, doctor utilisation, no-show rates, and revenue — all in a live dashboard.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY -->
+<section class="emergency-section" id="emergency">
+  <div class="emergency-inner">
+    <div>
+      <div class="em-chip">🚨 Emergency Services</div>
+      <h2 class="emergency-title">When every second matters, Welleni doesn't make you wait.</h2>
+      <p class="emergency-desc">A complete emergency response system built into every patient's pocket — and every hospital's dashboard.</p>
+      <div class="em-features">
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">One-tap SOS with automatic alerts</div><div class="em-feat-desc">Family notified, nearest hospitals alerted, and ambulance dispatched — one tap.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Live ambulance tracking</div><div class="em-feat-desc">Patient and family track the ambulance in real time on a live map.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Offline Medical ID</div><div class="em-feat-desc">Blood group, allergies, conditions accessible without internet or login.</div></div></div>
+        <div class="em-feature"><div class="em-check">✓</div><div><div class="em-feat-title">Hospital sees patient data before arrival</div><div class="em-feat-desc">Receiving hospital gets the patient's Medical ID the moment SOS is triggered.</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sos-phone">
+        <div class="sos-screen">
+          <div style="font-size:.72rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:4px">Welleni EMERGENCY</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.8);margin-bottom:20px">Press SOS to alert family & hospitals</div>
+          <div class="sos-btn-wrap"><div class="sos-ring"></div><div class="sos-ring-2"></div><div class="sos-btn-main">SOS<small>Tap to Alert</small></div></div>
+          <div class="sos-info">Your GPS location will be shared automatically</div>
+        </div>
+        <div class="sos-cards">
+          <div class="sos-card"><div class="sos-card-icon">📍</div><div class="sos-card-val">1.2 km</div><div class="sos-card-lbl">Nearest Hospital</div></div>
+          <div class="sos-card"><div class="sos-card-icon">🚑</div><div class="sos-card-val">4 min</div><div class="sos-card-lbl">Ambulance ETA</div></div>
+          <div class="sos-card"><div class="sos-card-icon">👨‍👩‍👧</div><div class="sos-card-val">Notified</div><div class="sos-card-lbl">Family Alerted</div></div>
+          <div class="sos-card"><div class="sos-card-icon">🏥</div><div class="sos-card-val">3 Ready</div><div class="sos-card-lbl">Hospitals Alerted</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-block"><div class="stat-block-num">75,000+</div><div class="stat-block-lbl">Patients registered</div></div>
+    <div class="stat-block"><div class="stat-block-num">150+</div><div class="stat-block-lbl">Hospitals onboarded</div></div>
+    <div class="stat-block"><div class="stat-block-num">20,000+</div><div class="stat-block-lbl">Appointments monthly</div></div>
+    <div class="stat-block"><div class="stat-block-num">&lt;3 min</div><div class="stat-block-lbl">Emergency response time</div></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="section section-teal">
+  <div class="container">
+    <div class="section-head center"><div class="chip">Testimonials</div><h2 class="section-title">Loved by patients <em>&amp; hospitals</em></h2></div>
+    <div class="testimonials-track">
+      <div class="testimonial-card reveal"><div class="tc-stars">★★★★★</div><div class="tc-quote">"I managed my father's bypass surgery follow-ups entirely through Welleni. The medication reminders saved me so much stress."</div><div class="tc-author"><div class="tc-avatar">👩</div><div><div class="tc-name">Sunita Reddy</div><div class="tc-role">Patient — Gachibowli, Hyderabad</div></div></div></div>
+      <div class="testimonial-card reveal reveal-delay-1"><div class="tc-stars">★★★★★</div><div class="tc-quote">"Our no-show rate dropped from 28% to 9% in the first month. The automatic reminders changed everything."</div><div class="tc-author"><div class="tc-avatar">👨‍⚕️</div><div><div class="tc-name">Dr. Arvind Mehta</div><div class="tc-role">Medical Director — Sunshine Hospital</div></div></div></div>
+      <div class="testimonial-card reveal reveal-delay-2"><div class="tc-stars">★★★★★</div><div class="tc-quote">"The SOS feature saved my uncle's life. Within 3 minutes the ambulance was dispatched and the hospital had his medical details ready."</div><div class="tc-author"><div class="tc-avatar">👦</div><div><div class="tc-name">Karthik Nair</div><div class="tc-role">Patient Family — Banjara Hills, Hyderabad</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-card reveal">
+      <h2 class="cta-title">Ready to transform your hospital's <em>patient experience?</em></h2>
+      <p class="cta-desc">Join 150+ hospitals across Hyderabad. Free for 6 months, no contract. Live in under 30 minutes.</p>
+      <div class="cta-form">
+        <input type="text" class="form-input" placeholder="Hospital name"/>
+        <input type="tel" class="form-input" placeholder="Your mobile number" style="min-width:200px"/>
+        <button class="btn-primary" onclick="handleCTA(this)">Request Demo →</button>
+      </div>
+      <p class="cta-note">🔒 Your details are safe. We'll call within 24 hours.</p>
+      <div id="cta-success" style="display:none;margin-top:20px;background:var(--foam);border:1px solid var(--foam);border-radius:12px;padding:16px;color:var(--teal);font-weight:600">✅ Thank you! Our team will reach out within 24 hours.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div class="logo-mark"><svg viewBox="0 0 40 40" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="6" width="8" height="28" rx="3" fill="white"/><rect x="6" y="16" width="28" height="8" rx="3" fill="white"/></svg></div><div style="display:flex;flex-direction:column;gap:2px"><span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white">Well<span style="color:#99F6E4">eni</span></span><span style="font-size:.6rem;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase">Connecting to better health</span></div></div>
+        <p style="font-size:.85rem;line-height:1.7;max-width:260px;color:rgba(255,255,255,.55)">Connecting Hyderabad's healthwell ecosystem — one appointment, record, and emergency at a time.</p>
+      </div>
+      <div><div class="footer-heading">Platform</div><ul class="footer-links"><li><a href="#features">Features</a></li><li><a href="#how">How It Works</a></li><li><a href="#emergency">Emergency</a></li></ul></div>
+      <div><div class="footer-heading">Access</div><ul class="footer-links"><li><a onclick="goPage('page-login')" style="cursor:pointer">Patient Login</a></li><li><a onclick="goPage('page-login')" style="cursor:pointer">Hospital Login</a></li><li><a onclick="goPage('page-register')" style="cursor:pointer">Register</a></li></ul></div>
+      <div><div class="footer-heading">Company</div><ul class="footer-links"><li><a href="#">About Welleni</a></li><li><a href="#">Blog</a></li><li><a href="#">Wellers</a></li><li><a href="#">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div style="font-size:.8rem;color:rgba(255,255,255,.35)">© 2026 Welleni. Built in Hyderabad, India. 🇮🇳</div>
+      <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Security</a></div>
+    </div>
+  </div>
+</footer>
+</div><!-- /page-landing -->
