@@ -1,0 +1,175 @@
+<!-- ── RECORD VIEWER MODAL ── -->
+<div id="record-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:780px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:1rem;color:var(--body-text)" id="modal-title">Record</div>
+      <button onclick="closeRecordModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-light);line-height:1">×</button>
+    </div>
+    <div id="modal-body" style="flex:1;overflow:auto;padding:24px;text-align:center"></div>
+    <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end">
+      <button id="modal-download-btn" class="btn-secondary" style="padding:9px 20px;font-size:.88rem">⬇ Download</button>
+      <button onclick="closeRecordModal()" class="btn-primary" style="padding:9px 20px;font-size:.88rem">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RECORD EDIT MODAL ── -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.3);padding:32px">
+    <div style="font-weight:700;font-size:1rem;color:var(--body-text);margin-bottom:20px">Edit Record</div>
+    <input type="hidden" id="edit-rec-id"/>
+    <div class="form-group"><label class="form-label">Record Name</label><input class="form-control" id="edit-rec-name"/></div>
+    <div class="form-group"><label class="form-label">Type</label>
+      <select class="form-control" id="edit-rec-type">
+        <option value="upload">Upload</option><option value="lab">Lab Report</option>
+        <option value="prescription">Prescription</option><option value="report">Report</option><option value="summary">Summary</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Hospital / Source</label><input class="form-control" id="edit-rec-hospital"/></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="saveEditRecord()" class="form-btn" style="margin-top:0">Save</button>
+      <button onclick="closeEditModal()" class="btn-secondary" style="padding:12px 20px">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── WHATSAPP FLOATING BUTTON + CHAT ── -->
+<div class="wa-fab" id="waFab">
+  <!-- Chat Window -->
+  <div class="wa-chat" id="waChat">
+    <!-- Header -->
+    <div class="wa-chat-head">
+      <div class="wa-chat-avatar">🏥</div>
+      <div>
+        <div class="wa-chat-name">Welleni Support</div>
+        <div class="wa-chat-status"><span class="wa-online-dot"></span> Online • Typically replies instantly</div>
+      </div>
+      <button class="wa-chat-close" onclick="toggleChat()">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="wa-chat-tabs">
+      <button class="wa-chat-tab active" onclick="switchWaTab('chat',this)">💬 Chat</button>
+      <button class="wa-chat-tab" onclick="switchWaTab('features',this)">⚡ Features</button>
+      <button class="wa-chat-tab" onclick="switchWaTab('appointments',this)">📅 Appointments</button>
+    </div>
+
+    <!-- CHAT TAB -->
+    <div class="wa-tab-content active" id="wa-tab-chat">
+      <div class="wa-messages" id="waMessages">
+        <div class="wa-msg wa-msg-in">
+          👋 Hi! Welcome to <strong>Welleni</strong>. How can we help you today?
+          <div class="wa-msg-time">Just now</div>
+        </div>
+        <div class="wa-msg wa-msg-in">
+          You can ask me about appointments, health records, emergency services, or anything else!
+          <div class="wa-msg-time">Just now</div>
+        </div>
+      </div>
+
+      <!-- Quick Replies -->
+      <div class="wa-quick-replies">
+        <button class="wa-qr-btn" onclick="sendQuickReply('Book an appointment')">📅 Book Appointment</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('Emergency SOS help')">🚨 Emergency</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('View my health records')">📋 Health Records</button>
+        <button class="wa-qr-btn" onclick="sendQuickReply('Contact a doctor')">🩺 Contact Doctor</button>
+      </div>
+
+      <!-- Emoji Picker -->
+      <div class="wa-emoji-picker" id="waEmojiPicker">
+        <div class="wa-emoji-grid" id="waEmojiGrid"></div>
+      </div>
+
+      <!-- Input -->
+      <div class="wa-input-row" style="position:relative">
+        <div class="wa-input-wrap">
+          <button class="wa-emoji-btn" onclick="toggleEmojiPicker(event)" title="Emoji">😊</button>
+          <textarea class="wa-input" id="waInput" rows="1" placeholder="Type a message..." onkeydown="handleWaKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="wa-attach-btn" onclick="showToast('📎 File sharing coming soon!')" title="Attach">📎</button>
+        </div>
+        <button class="wa-send-btn" onclick="sendWaMessage()" title="Send">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- FEATURES TAB -->
+    <div class="wa-tab-content" id="wa-tab-features">
+      <div class="wa-features-list">
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Book an appointment')">
+          <div class="wa-feat-icon">📅</div>
+          <div><div class="wa-feat-title">Book Appointment</div><div class="wa-feat-sub">Find specialists & book slots instantly</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Show my health records')">
+          <div class="wa-feat-icon">📋</div>
+          <div><div class="wa-feat-title">Health Records</div><div class="wa-feat-sub">Access prescriptions, labs & reports</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Medication reminders')">
+          <div class="wa-feat-icon">💊</div>
+          <div><div class="wa-feat-title">Medication Reminders</div><div class="wa-feat-sub">Get daily reminders on WhatsApp</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Emergency SOS help')">
+          <div class="wa-feat-icon">🚨</div>
+          <div><div class="wa-feat-title">Emergency SOS</div><div class="wa-feat-sub">One-tap ambulance dispatch</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Lab reports update')">
+          <div class="wa-feat-icon">🧪</div>
+          <div><div class="wa-feat-title">Lab Report Alerts</div><div class="wa-feat-sub">Get notified when reports are ready</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Doctor consultation')">
+          <div class="wa-feat-icon">🩺</div>
+          <div><div class="wa-feat-title">Doctor Consultation</div><div class="wa-feat-sub">Chat with your doctor directly</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Blood donor request')">
+          <div class="wa-feat-icon">🩸</div>
+          <div><div class="wa-feat-title">Blood Donor Network</div><div class="wa-feat-sub">Find donors by blood type near you</div></div>
+        </div>
+        <div class="wa-feature-item" onclick="switchWaTab('chat',document.querySelector('.wa-chat-tab'));sendQuickReply('Ambulance tracking')">
+          <div class="wa-feat-icon">🚑</div>
+          <div><div class="wa-feat-title">Ambulance Tracking</div><div class="wa-feat-sub">Live location updates via WhatsApp</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS TAB -->
+    <div class="wa-tab-content" id="wa-tab-appointments">
+      <div class="wa-appt-list">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;padding:4px 0">Upcoming Appointments</div>
+        <div class="wa-appt-card">
+          <div class="wa-appt-doc">🫀 Dr. S. Rao — Cardiology</div>
+          <div class="wa-appt-info">Apollo Hospitals · 12 Mar 2026 · 10:30 AM</div>
+          <div class="wa-appt-action">
+            <button class="wa-appt-btn wa-appt-btn-green" onclick="showToast('Reminder set on WhatsApp!')">⏰ Set Reminder</button>
+            <button class="wa-appt-btn wa-appt-btn-outline" style="border:1.5px solid #25D366;background:white;color:#128C7E" onclick="showToast('Appointment cancelled.')">✕ Cancel</button>
+          </div>
+        </div>
+        <div class="wa-appt-card">
+          <div class="wa-appt-doc">🦴 Dr. P. Mehta — Orthopaedics</div>
+          <div class="wa-appt-info">KIMS Hospital · 18 Mar 2026 · 3:00 PM</div>
+          <div class="wa-appt-action">
+            <button class="wa-appt-btn wa-appt-btn-green" onclick="showToast('Reminder set on WhatsApp!')">⏰ Set Reminder</button>
+            <button class="wa-appt-btn wa-appt-btn-outline" style="border:1.5px solid #25D366;background:white;color:#128C7E" onclick="showToast('Appointment cancelled.')">✕ Cancel</button>
+          </div>
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;padding:8px 0 4px">Quick Actions</div>
+        <button class="wa-appt-btn wa-appt-btn-green" style="width:100%;padding:11px;border-radius:10px;font-size:.85rem" onclick="showToast('Opening booking on WhatsApp...')">📅 Book New Appointment via WhatsApp</button>
+        <button onclick="openWhatsApp()" style="width:100%;padding:11px;border-radius:10px;font-size:.85rem;font-weight:600;background:white;border:1.5px solid #25D366;color:#128C7E;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px">
+          Open in WhatsApp ↗
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB Button -->
+  <div style="position:relative">
+    <div class="wa-pulse"></div>
+    <button class="wa-btn" onclick="toggleChat()" id="waBtnMain" title="Chat on WhatsApp">
+      <div class="wa-dot" id="waDot">1</div>
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <div class="wa-tooltip">Chat with Welleni</div>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: LANDING
