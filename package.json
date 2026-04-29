@@ -4,7 +4,7 @@
   "description": "Welleni — Cloudflare Workers deployment",
   "private": true,
   "scripts": {
-    "build":  "wrangler deploy",
+    "build":  "vite build",
     "dev":    "wrangler dev",
     "deploy": "wrangler deploy",
     "deploy:staging":    "wrangler deploy --env staging",
@@ -15,8 +15,4 @@
     "wrangler": "^4.0.0"
   }
 }
-{
-  "scripts": {
-    "build": "vite build"
-  }
-}
+
