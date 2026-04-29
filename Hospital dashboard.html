@@ -1,0 +1,281 @@
+<div id="pagwelltal" class="page">
+<nav id="hosp-nav" class="hosp-nav" style="position:fixed;top:0;left:0;right:0;z-index:1000;backdrop-filter:blur(20px)">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goPage('page-landing')"><svg viewBox="0 0 64 70" style="width:36px;height:40px"><polygon points="32,4 58,18 58,52 32,66 6,52 6,18" fill="#0B7A75"/><rect x="28" y="22" width="8" height="26" rx="3" fill="white"/><rect x="19" y="31" width="26" height="8" rx="3" fill="white"/></svg><span class="logo-text"><span style="font-weight:500;color:#9FE1CB">Well</span><span style="font-weight:400">eni</span></span></a>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="font-size:.85rem;color:rgba(255,255,255,.8)" id="hosp-nav-name">Hospital</div>
+      <button onclick="signOut()" style="padding:7px 16px;background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.25);border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:.82rem">Sign Out</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-wrap">
+  <div class="sidebar hosp-sidebar">
+    <div class="sidebar-section">
+      <div style="padding:12px;margin-bottom:4px">
+        <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:2px">Hospital Dashboard</div>
+        <div style="font-weight:700;color:white;font-size:.92rem" id="hosp-sidebar-name">Hospital</div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operations</div>
+      <button class="sidebar-item active" onclick="showHPanel('h-overview',this)"><span class="si-icon">📊</span> Overview</button>
+      <button class="sidebar-item" onclick="showHPanel('h-appointments',this)"><span class="si-icon">📅</span> Appointments <span class="sidebar-badge">5</span></button>
+      <button class="sidebar-item" onclick="showHPanel('h-patients',this)"><span class="si-icon">👥</span> Patient Records</button>
+      <button class="sidebar-item" onclick="showHPanel('h-beds',this)"><span class="si-icon">🛏️</span> Bed Management</button>
+      <button class="sidebar-item" onclick="showHPanel('h-schedule',this)"><span class="si-icon">🕐</span> Doctor Schedule</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Emergency</div>
+      <button class="sidebar-item" onclick="showHPanel('h-emergency',this)"><span class="si-icon">🚨</span> Emergency Inbox <span class="sidebar-badge">3</span></button>
+      <button class="sidebar-item" onclick="showHPanel('h-ambulance',this)"><span class="si-icon">🚑</span> Ambulance Fleet</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Admin</div>
+      <button class="sidebar-item" onclick="showHPanel('h-settings',this)"><span class="si-icon">⚙️</span> Hospital Settings</button>
+    </div>
+  </div>
+  <div class="dash-main hosp-main">
+
+    <!-- OVERVIEW -->
+    <div class="dash-panel active" id="h-overview">
+      <div class="dash-header"><div class="dash-title">Hospital Overview</div><div class="dash-sub"><span id="hosp-overview-name">Hospital</span> &mdash; Today's Summary</div></div>
+      <div class="dash-grid">
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">📅</div><div class="dsc-num">48</div><div class="dsc-lbl">Today's Appointments</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">🛏️</div><div class="dsc-num">12</div><div class="dsc-lbl">Available Beds</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">🚨</div><div class="dsc-num">3</div><div class="dsc-lbl">Active Emergencies</div></div>
+        <div class="dash-stat-card hosp-stat"><div class="dsc-icon">📈</div><div class="dsc-num">94%</div><div class="dsc-lbl">Show-up Rate</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div class="dash-card">
+          <div class="dash-card-title">🚨 Emergency Alerts <a onclick="showHPanel('h-emergency',null)">View All</a></div>
+          <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Rajesh Kumar, 1.2 km away</div><div class="alert-sub">Cardiac emergency · 2 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched!')">Dispatch</button></div>
+          <div class="alert-item alert-appt"><div class="alert-icon">📅</div><div><div class="alert-title">Priya Sharma checked in</div><div class="alert-sub">Orthopaedics · 11:00 AM slot</div></div><button class="alert-action alert-action-blue" onclick="showToast('Patient admitted!')">Admit</button></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">Today's Schedule <a onclick="showHPanel('h-schedule',null)">View All</a></div>
+          <div class="schedule-row"><div class="schedule-time">10:30 AM</div><div class="schedule-patient"><div class="schedule-doc">Rajesh Kumar</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge status-upcoming">Waiting</span></div>
+          <div class="schedule-row"><div class="schedule-time">11:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Priya Sharma</div><div class="schedule-dept">Orthopaedics · Dr. P. Mehta</div></div><span class="status-badge status-completed">In Room</span></div>
+          <div class="schedule-row"><div class="schedule-time">11:45 AM</div><div class="schedule-patient"><div class="schedule-doc">Lakshmi Devi</div><div class="schedule-dept">Neurology · Dr. V. Iyer</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="dash-panel" id="h-appointments">
+      <div class="dash-header"><div class="dash-title">Appointments</div><div class="dash-sub">All bookings for today</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Today — 10 March 2026 &nbsp;<span style="font-size:.78rem;font-weight:400;color:var(--text-light)">48 appointments</span></div>
+        <table class="patient-table">
+          <thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>10:30 AM</td><td>Rajesh Kumar</td><td>Dr. S. Rao</td><td>Cardiology</td><td><span class="status-badge status-upcoming">Waiting</span></td><td><button class="record-btn" onclick="showToast('Patient admitted!')">Admit</button></td></tr>
+            <tr><td>11:00 AM</td><td>Priya Sharma</td><td>Dr. P. Mehta</td><td>Orthopaedics</td><td><span class="status-badge status-completed">In Room</span></td><td><button class="record-btn" onclick="showToast('Prescription sent!')">Prescribe</button></td></tr>
+            <tr><td>11:45 AM</td><td>Lakshmi Devi</td><td>Dr. V. Iyer</td><td>Neurology</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+            <tr><td>12:00 PM</td><td>Arun Reddy</td><td>Dr. S. Rao</td><td>Cardiology</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+            <tr><td>2:00 PM</td><td>Meena Patel</td><td>Dr. R. Gupta</td><td>General</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></td><td><button class="record-btn" onclick="showToast('Marked as waiting!')">Check In</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div class="dash-panel" id="h-patients">
+      <div class="dash-header"><div class="dash-title">Patient Records</div><div class="dash-sub">All registered patients at this hospital</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Patient Registry</div>
+        <div style="margin-bottom:16px"><input class="form-control" placeholder="🔍 Search patients by name, ID or condition..." style="max-width:360px"/></div>
+        <table class="patient-table">
+          <thead><tr><th>Patient ID</th><th>Name</th><th>Age</th><th>Blood Group</th><th>Last Visit</th><th>Condition</th><th>Records</th></tr></thead>
+          <tbody>
+            <tr><td>P-001</td><td>Rajesh Kumar</td><td>40</td><td>B+</td><td>12 Feb 2026</td><td>Hypertension</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-002</td><td>Priya Sharma</td><td>35</td><td>A+</td><td>8 Mar 2026</td><td>Knee Injury</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-003</td><td>Lakshmi Devi</td><td>62</td><td>O+</td><td>22 Jan 2026</td><td>Migraine</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-004</td><td>Arun Reddy</td><td>55</td><td>AB+</td><td>5 Mar 2026</td><td>Diabetes Type 2</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+            <tr><td>P-005</td><td>Meena Patel</td><td>28</td><td>B-</td><td>1 Mar 2026</td><td>General Checkup</td><td><button class="record-btn" onclick="showToast('Opening records...')">View</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BEDS -->
+    <div class="dash-panel" id="h-beds">
+      <div class="dash-header"><div class="dash-title">Bed Management</div><div class="dash-sub">Real-time bed availability across all wards</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px">
+        <div style="background:var(--foam);border:1px solid var(--foam);border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--teal)">12</div><div style="font-size:.8rem;color:var(--text-light)">Available Beds</div></div>
+        <div style="background:#FEE2E2;border:1px solid #FECACA;border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--emergency)">36</div><div style="font-size:.8rem;color:var(--text-light)">Occupied Beds</div></div>
+        <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:14px;padding:18px;text-align:center"><div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--amber)">4</div><div style="font-size:.8rem;color:var(--text-light)">Reserved Beds</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Ward A — General</div>
+        <div class="bed-grid" id="bed-grid"></div>
+        <div style="display:flex;gap:20px;margin-top:16px;font-size:.75rem">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#DCFCE7;border:1px solid #BBF7D0;border-radius:4px;display:inline-block"></span>Free</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#FEE2E2;border:1px solid #FECACA;border-radius:4px;display:inline-block"></span>Occupied</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:14px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:4px;display:inline-block"></span>Reserved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="dash-panel" id="h-schedule">
+      <div class="dash-header"><div class="dash-title">Doctor Schedule</div><div class="dash-sub">Today's doctor roster and appointment timeline</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Today — Full Schedule</div>
+        <div class="schedule-row"><div class="schedule-time">9:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Walk-in — Sanjay Mehta</div><div class="schedule-dept">General Medicine · Dr. R. Gupta</div></div><span class="status-badge status-completed">Done</span></div>
+        <div class="schedule-row"><div class="schedule-time">10:30 AM</div><div class="schedule-patient"><div class="schedule-doc">Rajesh Kumar</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge status-upcoming">Waiting</span></div>
+        <div class="schedule-row"><div class="schedule-time">11:00 AM</div><div class="schedule-patient"><div class="schedule-doc">Priya Sharma</div><div class="schedule-dept">Orthopaedics · Dr. P. Mehta</div></div><span class="status-badge status-completed">In Room</span></div>
+        <div class="schedule-row"><div class="schedule-time">11:45 AM</div><div class="schedule-patient"><div class="schedule-doc">Lakshmi Devi</div><div class="schedule-dept">Neurology · Dr. V. Iyer</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        <div class="schedule-row"><div class="schedule-time">2:00 PM</div><div class="schedule-patient"><div class="schedule-doc">Arun Reddy</div><div class="schedule-dept">Cardiology · Dr. S. Rao</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+        <div class="schedule-row"><div class="schedule-time">3:30 PM</div><div class="schedule-patient"><div class="schedule-doc">Meena Patel</div><div class="schedule-dept">General Medicine · Dr. R. Gupta</div></div><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Confirmed</span></div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="dash-panel" id="h-emergency">
+      <div class="dash-header"><div class="dash-title">Emergency Inbox</div><div class="dash-sub">Real-time SOS alerts from patients nearby</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Active Emergencies</div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Rajesh Kumar</div><div class="alert-sub">Cardiac emergency · 1.2 km away · B+ blood type · 2 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched to Rajesh Kumar!')">Dispatch Ambulance</button></div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🆘</div><div><div class="alert-title">SOS — Unknown Patient</div><div class="alert-sub">Road accident · 2.8 km away · Offline Medical ID active · 5 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Ambulance dispatched!')">Dispatch Ambulance</button></div>
+        <div class="alert-item alert-sos"><div class="alert-icon">🩸</div><div><div class="alert-title">Blood Request — O- urgently needed</div><div class="alert-sub">3 units needed · ICU patient · 10 min ago</div></div><button class="alert-action alert-action-red" onclick="showToast('Donor alert sent!')">Alert Donors</button></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Recent Resolved</div>
+        <div class="alert-item" style="background:#F0FDF4;border-color:#BBF7D0"><div class="alert-icon">✅</div><div><div class="alert-title">Ambulance returned — Priya Nair</div><div class="alert-sub">Patient admitted · Ward B-12 · 45 min ago</div></div></div>
+        <div class="alert-item" style="background:#F0FDF4;border-color:#BBF7D0"><div class="alert-icon">✅</div><div><div class="alert-title">SOS resolved — Arun Sharma</div><div class="alert-sub">Discharged from ER · 2 hours ago</div></div></div>
+      </div>
+    </div>
+
+    <!-- AMBULANCE -->
+    <div class="dash-panel" id="h-ambulance">
+      <div class="dash-header"><div class="dash-title">Ambulance Fleet</div><div class="dash-sub">Live status of all ambulances</div></div>
+      <div class="dash-card">
+        <div class="dash-card-title">Fleet Status</div>
+        <table class="patient-table">
+          <thead><tr><th>Unit</th><th>Reg. No.</th><th>Driver</th><th>Status</th><th>Location</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>AMB-01</td><td>TS 09 AA 1234</td><td>Ramesh K.</td><td><span class="status-badge" style="background:#DCFCE7;color:var(--green)">Available</span></td><td>Hospital Base</td><td><button class="record-btn" onclick="showToast('AMB-01 dispatched!')">Dispatch</button></td></tr>
+            <tr><td>AMB-02</td><td>TS 09 BB 5678</td><td>Suresh M.</td><td><span class="status-badge status-emergency">On Call</span></td><td>Jubilee Hills</td><td><button class="record-btn" onclick="showToast('Tracking AMB-02...')">Track</button></td></tr>
+            <tr><td>AMB-03</td><td>TS 09 CC 9012</td><td>Venu P.</td><td><span class="status-badge" style="background:#DCFCE7;color:var(--green)">Available</span></td><td>Hospital Base</td><td><button class="record-btn" onclick="showToast('AMB-03 dispatched!')">Dispatch</button></td></tr>
+            <tr><td>AMB-04</td><td>TS 09 DD 3456</td><td>Krishna R.</td><td><span class="status-badge" style="background:#FEF3C7;color:var(--amber)">Maintenance</span></td><td>Workshop</td><td><span style="font-size:.78rem;color:var(--text-light)">Unavailable</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <!-- SETTINGS / EDIT PROFILE -->
+<div class="dash-panel" id="h-settings">
+  <div class="dash-header">
+    <div class="dash-title">Hospital Settings</div>
+    <div class="dash-sub">Edit and update your hospital profile on Welleni</div>
+  </div>
+
+  <!-- Profile card -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+      <div style="width:64px;height:64px;background:#085553;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🏥</div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:#111827" id="edit-hosp-display-name">Hospital Name</div>
+        <div style="font-size:.82rem;color:#6B7280" id="edit-hosp-display-email">email@hospital.com</div>
+        <div style="font-size:.78rem;color:#085553;font-weight:600;margin-top:2px" id="edit-hosp-display-city">City</div>
+      </div>
+    </div>
+
+    <!-- Basic Info -->
+    <div class="dash-card-title" style="margin-bottom:14px">🏥 Basic Information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Hospital Name *</label>
+        <input class="form-control" id="edit-hosp-name" placeholder="Hospital name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Registration No.</label>
+        <input class="form-control" id="edit-hosp-regno" placeholder="MCI-HYD-XXXX"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <input class="form-control" id="edit-hosp-city" placeholder="Hyderabad"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pincode</label>
+        <input class="form-control" id="edit-hosp-pincode" placeholder="500001"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full Address</label>
+      <input class="form-control" id="edit-hosp-address" placeholder="Street, Area, City"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Contact Person</label>
+        <input class="form-control" id="edit-hosp-contact" placeholder="Dr. Name / Admin Name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-control" id="edit-hosp-phone" placeholder="+91 98765 43210"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input class="form-control" id="edit-hosp-email" type="email" placeholder="hospital@email.com"/>
+    </div>
+  </div>
+
+  <!-- Medical Info -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-title" style="margin-bottom:14px">🩺 Medical Details</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Total Beds</label>
+        <input class="form-control" id="edit-hosp-beds" type="number" placeholder="100"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emergency Line</label>
+        <input class="form-control" id="edit-hosp-emergency" placeholder="+91 40 XXXX 0000"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Specialties Available</label>
+      <input class="form-control" id="edit-hosp-specialties" placeholder="Cardiology, Orthopaedics, Neurology..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">About Hospital</label>
+      <textarea class="form-control" id="edit-hosp-about" rows="3" placeholder="Brief description about your hospital..." style="resize:vertical"></textarea>
+    </div>
+  </div>
+
+  <!-- Change Password -->
+  <div class="dash-card" style="margin-bottom:20px">
+    <div class="dash-card-title" style="margin-bottom:14px">🔒 Change Password</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input class="form-control" id="edit-hosp-newpw" type="password" placeholder="Min 8 characters"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input class="form-control" id="edit-hosp-confirmpw" type="password" placeholder="Repeat new password"/>
+      </div>
+    </div>
+    <div style="font-size:.78rem;color:#6B7280">Leave blank to keep current password</div>
+  </div>
+
+  <!-- Save Button -->
+  <div style="display:flex;gap:12px;align-items:center">
+    <button class="form-btn" style="width:auto;padding:12px 32px" id="save-hosp-btn" onclick="saveHospitalProfile()">
+      💾 Save Changes
+    </button>
+    <button style="padding:12px 24px;background:none;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#6B7280;cursor:pointer" onclick="loadHospitalProfileForm()">
+      ↺ Reset
+    </button>
+    <div id="save-hosp-status" style="font-size:.85rem;color:#085553;font-weight:600"></div>
+  </div>
+
+</div>
+
+  </div><!-- /dash-main -->
+</div><!-- /dash-wrap -->
+</div><!-- /pagwelltal -->
