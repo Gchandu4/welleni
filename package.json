@@ -1,12 +1,16 @@
 {
-  "name": "e-hospitee",
+  "name": "welleni-worker",
   "version": "1.0.0",
-  "description": "E-Hospitee Hospital & Patient Management Platform",
+  "description": "Welleni — Cloudflare Workers deployment",
+  "private": true,
   "scripts": {
-    "build": "echo 'Static site - no build needed'",
-    "start": "npx serve . -p 3000"
+    "dev":    "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging":    "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "tail":   "wrangler tail"
   },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "wrangler": "^3.0.0"
   }
 }
