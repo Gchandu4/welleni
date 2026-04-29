@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────
+#  Welleni — Cloudflare Workers Configuration
+#  Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+# ─────────────────────────────────────────────
+
+name                = "welleni"
+main                = "worker.js"
+compatibility_date  = "2024-09-23"
+
+# ── Static Assets ─────────────────────────────
+# Wrangler bundles everything in ./public and
+# serves it via the ASSETS binding in worker.js
+[assets]
+directory = "./public"
+binding   = "ASSETS"
+
+# ── Custom Domain (add yours here) ────────────
+# Uncomment and replace with your actual domain
+# routes = [
+#   { pattern = "welleni.com/*",     zone_name = "welleni.com" },
+#   { pattern = "www.welleni.com/*", zone_name = "welleni.com" },
+# ]
+
+# ── Environment: Production ───────────────────
+[env.production]
+name = "welleni-production"
+vars = { ENVIRONMENT = "production" }
+
+# ── Environment: Staging ──────────────────────
+[env.staging]
+name = "welleni-staging"
+vars = { ENVIRONMENT = "staging" }
