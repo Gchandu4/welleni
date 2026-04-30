@@ -3,12 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "vite build",
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
-  },
-  "devDependencies": {
-    "vite": "^6.3.3",
-    "wrangler": "^4.0.0"
+    "build": "echo 'No build needed'",
+    "start": "npx serve .",
+    "dev": "npx serve ."
   }
 }
