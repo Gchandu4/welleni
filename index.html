@@ -1146,6 +1146,7 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
   </div>
   <div id="hosp-otp-status" style="font-size:.78rem;margin-top:6px;color:#6B7280"></div>
 </div>
+      <div class="form-group"><label class="form-label">Password *</label><input class="form-control" type="password" id="reg-hosp-password" placeholder="Create a password"/></div>
       <div class="form-group"><label class="form-label">Confirm Password *</label><input class="form-control" type="password" id="reg-hosp-confirm" placeholder="Repeat password"/></div>
       <div class="consent-row">
         <input type="checkbox" id="reg-hosp-consent-terms"/>
@@ -2556,16 +2557,12 @@ async function handleRegister() {
       const contactPerson = document.getElementById('reg-hosp-contact')?.value.trim() || null;
       const email         = document.getElementById('reg-hosp-email')?.value.trim() || null; 
       const phone         = document.getElementById('reg-hosp-phone')?.value.trim() || null;
-      //const password      = document.getElementById('reg-hosp-password')?.value || '';
-     // const name = document.getElementById('reg-hosp-name')?.value.trim() || null;
-      //const email = document.getElementById('reg-hosp-email')?.value.trim() || null;
-      //const phone = document.getElementById('reg-hosp-phone')?.value.trim() || null;
+      const password       = document.getElementById('reg-hosp-password')?.value || '';
       const confirmPwHosp = document.getElementById('reg-hosp-confirm')?.value || '';
       const hospConsentTermsChecked     = document.getElementById('reg-hosp-consent-terms')?.checked || false;
       const hospConsentMarketingChecked = document.getElementById('reg-hosp-consent-marketing')?.checked || false;
 
       if (!name || !email || !password) { showToast('Please fill all required fields'); btn.textContent='Create Account →'; btn.disabled=false; return; }
-     // if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (password !== confirmPwHosp) { showToast('Passwords do not match'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (phone && !otpVerified.hospital) { showToast('Please verify your phone number with OTP'); btn.textContent='Create Account →'; btn.disabled=false; return; }
       if (!hospConsentTermsChecked) { showToast('Please agree to the Privacy Notice & Terms to continue'); btn.textContent='Create Account →'; btn.disabled=false; return; }
@@ -3337,9 +3334,8 @@ setTimeout(()=>{
 // PAYMENT INTEGRATION - Razorpay
 // ═══════════════════════════════════════════════════════════════
 
-// ⚠️ IMPORTANT: Replace with your actual Razorpay Key ID
-// Get it from: https://dashboard.razorpay.com/app/keys
-const RAZORPAY_KEY_ID = 'rzp_test_Shk1CMfPm2JC2T'; // ← ADD YOUR KEY HERE
+// Razorpay Key ID is no longer hardcoded here — it's returned by /api/create-order
+// (read from the RAZORPAY_KEY_ID secret on the worker) along with each real order.
 
 // Store pending appointment
 let pendingAppointment = null;
@@ -3427,17 +3423,29 @@ async function initiatePayment(appointment) {
   try {
     // Generate invoice number
     const invoiceNumber = 'INV-' + Date.now();
-    const orderId = 'ORDER-' + Date.now();
-    
+
+    // Order is created server-side now (see /api/create-order in worker.js) — a client-generated
+    // order_id can't be verified against Razorpay later, which is what let payments be spoofed.
+    const orderRes = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: appointment.fee })
+    });
+    const order = await orderRes.json();
+    if (!orderRes.ok || order.error) {
+      showToast('❌ Could not start payment: ' + (order.error || 'Please try again'));
+      return;
+    }
+
     // Razorpay options
     const options = {
-      key: RAZORPAY_KEY_ID,
-      amount: appointment.fee * 100, // Convert to paise
+      key: order.key,
+      amount: order.amount, // already in paise from the server
       currency: 'INR',
       name: 'Welleni',
       description: `Appointment with ${appointment.doctor}`,
       image: 'https://your-logo-url.com/logo.png',
-      order_id: orderId,
+      order_id: order.order_id,
       prefill: {
         name: appointment.patientName,
         email: appointment.patientEmail,
@@ -3480,7 +3488,25 @@ async function initiatePayment(appointment) {
 async function handlePaymentSuccess(response, appointment, invoiceNumber) {
   try {
     showToast('Processing payment...');
-    
+
+    // Verify the signature server-side before trusting this payment at all.
+    // Without this check, anyone could call handlePaymentSuccess() directly from
+    // devtools with a fake payment_id and get a "paid" appointment for free.
+    const verifyRes = await fetch('/api/verify-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature
+      })
+    });
+    const verifyResult = await verifyRes.json();
+    if (!verifyRes.ok || !verifyResult.valid) {
+      showToast('❌ Payment could not be verified. If you were charged, contact support with your payment ID.');
+      return;
+    }
+
     // Save appointment to database
     const { data, error } = await _sb.from('appointments').insert({
       patientId: appointment.patientId,
@@ -3716,8 +3742,7 @@ async function sendOTP(role) {
   const phone = document.getElementById(phoneId)?.value.trim();
   if (!phone || phone.length < 10) { showToast('Please enter a valid mobile number first'); return; }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  otpStore[role]    = otp;
+  otpStore[role]    = phone.replace(/\D/g,''); // phone number this OTP was sent to; the OTP itself is server-side only
   otpVerified[role] = false;
 
   document.getElementById(groupId).style.display = 'block';
@@ -3736,34 +3761,57 @@ async function sendOTP(role) {
     }
   }, 1000);
 
-  // ⚠️ Replace with your Fast2SMS key from fast2sms.com (free for India)
-  const FAST2SMS_KEY = 'C9Nv14k6Zx3qpsun80WVePAlIQLXzKwthD7dMoyUEjFTfGgrSJrItHdx36Q0yVhvukiWT752mPgAX1GD';
-
-  if (FAST2SMS_KEY !== 'C9Nv14k6Zx3qpsun80WVePAlIQLXzKwthD7dMoyUEjFTfGgrSJrItHdx36Q0yVhvukiWT752mPgAX1GD') {
-    try {
-      await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_KEY}&message=Your+Welleni+OTP+is+${otp}.+Valid+for+5+minutes.&language=english&route=q&numbers=${phone.replace(/\D/g,'')}`, { method: 'GET' });
+  // OTP is generated and sent server-side now (see /api/send-otp in worker.js) —
+  // the Fast2SMS key never ships to the browser, and the correct OTP is never
+  // exposed to client JS either (see verifyOTP(), which now also checks server-side).
+  try {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone.replace(/\D/g,''), role })
+    });
+    const result = await res.json();
+    if (!res.ok || result.error) {
+      document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">SMS failed to send. Please try again.</span>`;
+    } else if (result.devMode) {
+      // Only shown when FAST2SMS_API_KEY hasn't been set on the worker yet (local/dev use)
+      document.getElementById(statusId).innerHTML =
+        `<span style="color:#085553">✓ OTP (dev mode):</span>
+         <span style="background:#F0FDFA;border:1px solid #99F6E4;border-radius:6px;padding:2px 10px;font-weight:700;color:#085553;letter-spacing:2px">${result.devOtp}</span>
+         <span style="color:#9CA3AF;font-size:.72rem"> (set FAST2SMS_API_KEY on the worker to send real SMS)</span>`;
+    } else {
       document.getElementById(statusId).innerHTML = `<span style="color:#085553">✓ OTP sent to ${phone}</span>`;
-    } catch(e) {
-      document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">SMS failed. Check your API key.</span>`;
     }
-  } else {
-    // DEV MODE — shows OTP on screen (remove in production)
-    document.getElementById(statusId).innerHTML =
-      `<span style="color:#085553">✓ OTP:</span>
-       <span style="background:#F0FDFA;border:1px solid #99F6E4;border-radius:6px;padding:2px 10px;font-weight:700;color:#085553;letter-spacing:2px">${otp}</span>
-       <span style="color:#9CA3AF;font-size:.72rem"> (Add Fast2SMS key to send real SMS)</span>`;
+  } catch(e) {
+    document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">SMS failed. Please try again.</span>`;
   }
 }
 
-function verifyOTP(role) {
+async function verifyOTP(role) {
   const inputId  = role === 'patient' ? 'reg-patient-otp'    : 'reg-hosp-otp';
   const statusId = role === 'patient' ? 'patient-otp-status' : 'hosp-otp-status';
   const btnId    = role === 'patient' ? 'patient-verify-btn' : 'hosp-verify-btn';
 
   const entered = document.getElementById(inputId)?.value.trim();
-  if (!otpStore[role]) { showToast('Please request an OTP first'); return; }
+  const phone = otpStore[role];
+  if (!phone) { showToast('Please request an OTP first'); return; }
+  if (!entered) { showToast('Please enter the OTP'); return; }
 
-  if (entered === otpStore[role]) {
+  let verified = false;
+  try {
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, role, otp: entered })
+    });
+    const result = await res.json();
+    verified = !!result.verified;
+  } catch (e) {
+    document.getElementById(statusId).innerHTML = '<span style="color:#DC2626">Could not verify right now. Try again.</span>';
+    return;
+  }
+
+  if (verified) {
     otpVerified[role] = true;
     document.getElementById(statusId).innerHTML = '<span style="color:#16A34A;font-weight:600">✅ Mobile number verified!</span>';
     document.getElementById(inputId).disabled = true;

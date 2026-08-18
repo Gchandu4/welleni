@@ -14,6 +14,14 @@ compatibility_date  = "2026-04-29"
 directory = "./dist"
 binding   = "ASSETS"
 
+# ── OTP Storage (KV) ───────────────────────────
+# Required by the new /api/send-otp and /api/verify-otp routes in worker.js.
+# Create the namespace first: npx wrangler kv namespace create OTP_STORE
+# then replace the id below with the one that command prints.
+# [[kv_namespaces]]
+# binding = "OTP_STORE"
+# id = "REPLACE_WITH_YOUR_NAMESPACE_ID"
+
 # ── Custom Domain (add yours here) ────────────
 # Uncomment and replace with your actual domain
 # routes = [
