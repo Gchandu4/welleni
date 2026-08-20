@@ -1538,10 +1538,9 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
       </div>
       <!-- Results -->
       <div class="book-grid" id="nearby-results">
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div><div class="book-hosp">Apollo Hospitals</div><div class="book-spec">Cardiology · Dr. S. Rao</div><div class="book-slots">✓ 3 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. S. Rao','Cardiology','Apollo Hospitals',600)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏨</div><div class="book-hosp">KIMS Hospital</div><div class="book-spec">Orthopaedics · Dr. P. Mehta</div><div class="book-slots">✓ 5 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. P. Mehta','Orthopaedics','KIMS Hospital',500)">Book Now</button></div>
-        <div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏩</div><div class="book-hosp">Yashoda Hospital</div><div class="book-spec">Neurology · Dr. V. Iyer</div><div class="book-slots">✓ 2 slots available today</div><button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Dr. V. Iyer','Neurology','Yashoda Hospital',700)">Book Now</button></div>
+        <div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280">Loading hospitals...</div>
       </div>
+      <script>document.addEventListener('DOMContentLoaded', loadRegisteredHospitals);</script>
     </div>
 
     <!-- VITALS -->
@@ -2572,10 +2571,22 @@ async function handleRegister() {
 
       const hashed = await hashPw(password);
       const hospConsent = buildConsentPayload(hospConsentTermsChecked, hospConsentMarketingChecked);
+
+      // Geocode city + pincode so this hospital can be distance-sorted in patient search.
+      // Best-effort only — registration still succeeds if geocoding fails or times out.
+      let hospLat = null, hospLng = null;
+      try {
+        const geoQuery = encodeURIComponent(`${city || ''} ${pincode || ''} India`.trim());
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${geoQuery}&format=json&limit=1`);
+        const geoData = await geoRes.json();
+        if (geoData && geoData[0]) { hospLat = parseFloat(geoData[0].lat); hospLng = parseFloat(geoData[0].lon); }
+      } catch (geoErr) { /* non-fatal — hospital just won't have distance sorting yet */ }
+
       const { data: hosp, error } = await _sb.from('hospitals').insert({
         name, regNo: regNo || null,
         city: city || null,
         pincode: pincode || null,
+        lat: hospLat, lng: hospLng,
         contactPerson: contactPerson || null, email: email.toLowerCase(),
         phone: phone || null, password: hashed, createdAt: new Date().toISOString(),
         consent: hospConsent // DPDP: per-purpose consent snapshot at signup
@@ -2730,6 +2741,13 @@ function loadHospitalDash(hosp) {
   setVal('hosp-settings-pincode', hosp.pincode);
   setVal('hosp-settings-contact', hosp.contactPerson);
   setVal('hosp-settings-regno',   hosp.regNo);
+
+  // Load this hospital's real bookings — previously nothing populated this at all.
+  _sb.from('appointments').select('*').eq('hospitalId', hosp.id)
+    .then(({ data, error }) => {
+      if (error) { console.error('Failed to load hospital appointments:', error); return; }
+      renderAppointments(data || []);
+    });
 }
 
 function renderAppointments(appts) {
@@ -3108,8 +3126,57 @@ async function bookAppointment(doctor, specialty, hospital, fee) {
 // ── SIGN OUT ──
 function signOut() { DB.clearSession(); goPage('page-landing'); }
 
-// ── LOCATION-BASED DOCTOR SEARCH ──
+// ── HOSPITAL SEARCH — sourced from Welleni's own registered hospitals ──
 let userLat = null, userLng = null;
+// (Previously this called the Google Places API and showed generic public
+// listings, which never included hospitals that actually signed up on
+// Welleni. Registered hospitals are the source of truth now.)
+async function loadRegisteredHospitals() {
+  const grid = document.getElementById('nearby-results');
+  if (!grid) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280">Loading hospitals...</div>';
+
+  // Only select public-safe columns — never select('*') here, the row also
+  // holds each hospital's password hash.
+  const { data: hospitals, error } = await _sb.from('hospitals')
+    .select('id, name, city, pincode, regNo, lat, lng');
+
+  if (error) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280">Could not load hospitals right now.</div>';
+    console.error(error);
+    return;
+  }
+  if (!hospitals || !hospitals.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280"><div style="font-size:2rem">🏥</div>No partner hospitals yet.</div>';
+    return;
+  }
+
+  // Sort by distance if we know the user's location and the hospital's, else keep as-is
+  let sorted = hospitals;
+  if (userLat && userLng) {
+    sorted = [...hospitals].sort((a, b) => {
+      const da = (a.lat && a.lng) ? getDistance(userLat, userLng, a.lat, a.lng) : 9999;
+      const db = (b.lat && b.lng) ? getDistance(userLat, userLng, b.lat, b.lng) : 9999;
+      return da - db;
+    });
+  }
+
+  grid.innerHTML = sorted.map(h => {
+    const dist = (userLat && userLng && h.lat && h.lng) ? `📍 ${getDistance(userLat, userLng, h.lat, h.lng)} km` : (h.city || '');
+    return `<div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div>
+      <div class="book-hosp">${h.name}</div>
+      <div class="book-spec">${h.city || ''}${h.pincode ? ' · ' + h.pincode : ''}</div>
+      <div class="book-slots" style="color:#085553;font-weight:600">${dist}</div>
+      <button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Doctor','General','${h.name.replace(/'/g,"\\'")}',500,'${h.id}')">Book Now</button>
+      </div>`;
+  }).join('');
+}
+
+function searchNearbyHospitals() {
+  // "Search" / specialty change just re-triggers the load; filterDoctors()
+  // already handles the text-search box client-side against whatever is rendered.
+  loadRegisteredHospitals();
+}
 function getUserLocation() {
   const locText = document.getElementById('loc-text');
   if (locText) locText.textContent = 'Detecting your location...';
@@ -3121,42 +3188,8 @@ function getUserLocation() {
         const area = data.address.suburb || data.address.neighbourhood || data.address.city || 'your area';
         if (locText) locText.textContent = `📍 ${area}, ${data.address.city || 'Hyderabad'}`;
       }).catch(() => { if (locText) locText.textContent = '📍 Location detected'; });
-    searchNearbyHospitals();
+    loadRegisteredHospitals();
   }, () => { if (locText) locText.textContent = '⚠️ Location denied — showing default results'; }, { timeout: 8000 });
-}
-function searchNearbyHospitals() {
-  if (!userLat || !userLng) { getUserLocation(); return; }
-  if (typeof google === 'undefined') return;
-  const status = document.getElementById('loc-status');
-  const grid = document.getElementById('nearby-results');
-  const typeEl = document.getElementById('doc-specialty');
-  if (!grid) return;
-  const type = typeEl ? typeEl.value : 'hospital';
-  if (status) status.style.display = 'block';
-  grid.innerHTML = '';
-  const service = new google.maps.places.PlacesService(document.createElement('div'));
-  service.nearbySearch({ location: new google.maps.LatLng(userLat, userLng), radius: 5000,
-    keyword: type === 'hospital' ? 'hospital' : type + ' clinic', type: ['hospital','doctor','health']
-  }, (results, statusCode) => {
-    if (status) status.style.display = 'none';
-    if (statusCode !== google.maps.places.PlacesServiceStatus.OK || !results.length) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280"><div style="font-size:2rem">🔍</div>No results found nearby.</div>`; return;
-    }
-    grid.innerHTML = results.slice(0, 9).map(place => {
-      const dist = getDistance(userLat, userLng, place.geometry.location.lat(), place.geometry.location.lng());
-      const rating = place.rating ? `${place.rating} ⭐` : 'New';
-      const open = place.opening_hours?.open_now ? '<span style="color:#16A34A;font-size:.78rem;font-weight:600">● Open Now</span>' : '<span style="color:#DC2626;font-size:.78rem">● Closed</span>';
-      return `<div class="book-card"><div style="font-size:1.5rem;margin-bottom:6px">🏥</div>
-        <div class="book-hosp" style="font-size:.92rem">${place.name}</div>
-        <div style="font-size:.78rem;color:#6B7280;margin:3px 0">${place.vicinity}</div>
-        <div style="display:flex;justify-content:space-between;margin:6px 0"><span style="font-size:.78rem">${rating}</span><span style="font-size:.78rem;color:#085553;font-weight:600">📍 ${dist} km</span></div>
-        <div style="margin-bottom:10px">${open}</div>
-        <div style="display:flex;gap:6px">
-          <button class="btn-primary" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem" onclick="bookAppointmentWithPayment('Doctor','Specialist','${place.name.replace(/'/g,"\\'")}',500)">Book Now</button>
-          <a href="https://www.google.com/maps/place/?q=place_id:${place.place_id}" target="_blank" style="flex:1;padding:8px;border-radius:8px;font-size:.78rem;background:#F0FDFA;color:#085553;border:1px solid #99F6E4;text-align:center;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center">🗺️ Map</a>
-        </div></div>`;
-    }).join('');
-  });
 }
 function getDistance(lat1,lng1,lat2,lng2){const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;return(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);}
 function filterDoctors(){const q=(document.getElementById('doc-search')?.value||'').toLowerCase();document.querySelectorAll('#nearby-results .book-card').forEach(c=>{c.style.display=c.innerText.toLowerCase().includes(q)?'':'none';});}
@@ -3341,7 +3374,7 @@ setTimeout(()=>{
 let pendingAppointment = null;
 
 // ── BOOK APPOINTMENT WITH PAYMENT ──
-async function bookAppointmentWithPayment(doctor, specialty, hospital, fee) {
+async function bookAppointmentWithPayment(doctor, specialty, hospital, fee, hospitalId) {
   if (!currentUser) {
     showToast('Please sign in first');
     goPage('page-login');
@@ -3353,6 +3386,7 @@ async function bookAppointmentWithPayment(doctor, specialty, hospital, fee) {
     doctor,
     specialty,
     hospital,
+    hospitalId: hospitalId || null,
     fee,
     patientId: currentUser.id,
     patientName: currentUser.firstName + ' ' + (currentUser.lastName || ''),
@@ -3513,6 +3547,7 @@ async function handlePaymentSuccess(response, appointment, invoiceNumber) {
       doctor: appointment.doctor,
       specialty: appointment.specialty,
       hospital: appointment.hospital,
+      hospitalId: appointment.hospitalId || null,
       date: appointment.date,
       time: appointment.time,
       status: 'upcoming',
