@@ -2510,7 +2510,7 @@ async function sendResetOTP() {
     });
     const result = await res.json();
     if (!res.ok || result.error) {
-      statusEl.innerHTML = '<span style="color:#DC2626">Could not send code. Try again.</span>';
+      statusEl.innerHTML = `<span style="color:#DC2626">${result.error || 'Could not send code. Try again.'}</span>`;
       btn.disabled = false; btn.textContent = 'Send Reset Code';
       return;
     }
@@ -4072,7 +4072,7 @@ async function sendOTP(role) {
     });
     const result = await res.json();
     if (!res.ok || result.error) {
-      document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">SMS failed to send. Please try again.</span>`;
+      document.getElementById(statusId).innerHTML = `<span style="color:#DC2626">${result.error || 'SMS failed to send. Please try again.'}</span>`;
     } else if (result.devMode) {
       // Only shown when FAST2SMS_API_KEY hasn't been set on the worker yet (local/dev use)
       document.getElementById(statusId).innerHTML =

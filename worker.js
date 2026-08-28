@@ -35,11 +35,25 @@ async function handleApi(request, env, path) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid JSON body' }, 400); }
 
+  try {
+    return await routeApi(body, env, path);
+  } catch (e) {
+    // Never let an unexpected error (e.g. a missing KV/secret binding) crash to a
+    // non-JSON response — the client always expects JSON back from /api/*.
+    console.error('API error on', path, ':', e.message);
+    return json({ error: 'Server error: ' + e.message }, 500);
+  }
+}
+
+async function routeApi(body, env, path) {
   // ── Send OTP ──
   if (path === '/api/send-otp') {
     const { phone, role } = body;
     if (!phone || !/^\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
       return json({ error: 'Valid phone number required' }, 400);
+    }
+    if (!env.OTP_STORE) {
+      return json({ error: 'OTP storage is not configured on the server yet (OTP_STORE KV binding missing)' }, 500);
     }
     const cleanPhone = phone.replace(/\D/g, '');
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -65,6 +79,9 @@ async function handleApi(request, env, path) {
   if (path === '/api/verify-otp') {
     const { phone, role, otp } = body;
     if (!phone || !role || !otp) return json({ verified: false }, 400);
+    if (!env.OTP_STORE) {
+      return json({ error: 'OTP storage is not configured on the server yet (OTP_STORE KV binding missing)' }, 500);
+    }
     const cleanPhone = phone.replace(/\D/g, '');
     const stored = await env.OTP_STORE.get(`otp:${role}:${cleanPhone}`);
     if (stored && stored === String(otp)) {
@@ -101,6 +118,38 @@ async function handleApi(request, env, path) {
     if (!env.RAZORPAY_KEY_SECRET) return json({ error: 'Razorpay is not configured on the server yet' }, 500);
     const expected = await hmacSha256Hex(`${razorpay_order_id}|${razorpay_payment_id}`, env.RAZORPAY_KEY_SECRET);
     return json({ valid: expected === razorpay_signature });
+  }
+
+  // ── Send WhatsApp message (Meta Cloud API) ──
+  // Used for booking confirmations to both the patient and the hospital.
+  // IMPORTANT: Meta requires business-initiated messages (i.e. not a reply within
+  // an existing 24h user session) to use a pre-approved message template, not
+  // free-form text. Create and get "appointment_confirmation" approved in
+  // Meta Business Manager before relying on this in production — until then,
+  // Meta will reject these sends outside the 24h window.
+  if (path === '/api/send-whatsapp') {
+    const { to, message } = body;
+    if (!to || !message) return json({ error: 'to and message are required' }, 400);
+    if (!env.WHATSAPP_TOKEN || !env.WHATSAPP_PHONE_ID) {
+      return json({ error: 'WhatsApp is not configured on the server yet' }, 500);
+    }
+    try {
+      const res = await fetch(`https://graph.facebook.com/v20.0/${env.WHATSAPP_PHONE_ID}/messages`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          to: to.replace(/\D/g, ''),
+          type: 'text',
+          text: { body: message }
+        })
+      });
+      const result = await res.json();
+      if (!res.ok) return json({ error: result.error?.message || 'WhatsApp send failed' }, 502);
+      return json({ ok: true });
+    } catch (e) {
+      return json({ error: 'WhatsApp send failed' }, 502);
+    }
   }
 
   return json({ error: 'Not found' }, 404);
