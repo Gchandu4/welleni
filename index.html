@@ -1378,14 +1378,14 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
     <div id="login-patient">
       <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" placeholder="you@email.com" id="login-id"/></div>
       <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="login-pw"/></div>
-      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <div style="text-align:right;margin-bottom:16px"><a onclick="openForgotPassword('patient')" style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
       <button class="form-btn" id="patient-login-btn" onclick="this.style.opacity='0.7';this.textContent='Opening…';handleLogin('patient')">Sign In as Patient →</button>
     </div>
 
     <div id="login-hospital" style="display:none">
       <div class="form-group"><label class="form-label">Hospital Email</label><input class="form-control" type="email" placeholder="admin@hospital.com" id="hosp-login-id"/></div>
       <div class="form-group"><label class="form-label">Password</label><input class="form-control" type="password" placeholder="Enter your password" id="hosp-login-pw"/></div>
-      <div style="text-align:right;margin-bottom:16px"><a style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
+      <div style="text-align:right;margin-bottom:16px"><a onclick="openForgotPassword('hospital')" style="font-size:.82rem;color:var(--teal);font-weight:600;cursor:pointer">Forgot password?</a></div>
       <button class="form-btn" id="hosp-login-btn" onclick="this.style.opacity='0.7';this.textContent='Signing in…';handleLogin('hospital')">Sign In as Hospital →</button>
     </div>
 
@@ -1393,6 +1393,46 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
   </div>
 </div>
 </div><!-- /page-login -->
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div id="forgot-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--white);border-radius:20px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:700;font-size:1.1rem;color:var(--body-text)">🔒 Reset Password</div>
+      <button onclick="closeForgotPassword()" style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--text-light);line-height:1">×</button>
+    </div>
+    <div style="padding:24px">
+
+      <!-- Step 1: email -->
+      <div id="forgot-step-email">
+        <p style="font-size:.85rem;color:var(--text-light);margin-bottom:16px">Enter the email on your account. We'll send a verification code to your registered mobile number.</p>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" id="forgot-email" placeholder="you@email.com"/></div>
+        <div id="forgot-email-status" style="font-size:.82rem;margin-bottom:10px"></div>
+        <button class="form-btn" id="forgot-send-btn" onclick="sendResetOTP()">Send Reset Code</button>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div id="forgot-step-otp" style="display:none">
+        <p style="font-size:.85rem;color:var(--text-light);margin-bottom:16px">Enter the 6-digit code sent to your registered mobile.</p>
+        <div class="form-group"><label class="form-label">OTP</label><input class="form-control" type="text" id="forgot-otp" maxlength="6" placeholder="6-digit code" style="letter-spacing:4px;font-weight:600"/></div>
+        <div id="forgot-otp-status" style="font-size:.82rem;margin-bottom:10px"></div>
+        <button class="form-btn" id="forgot-verify-btn" onclick="verifyResetOTP()">Verify Code</button>
+      </div>
+
+      <!-- Step 3: new password -->
+      <div id="forgot-step-newpw" style="display:none">
+        <p style="font-size:.85rem;color:var(--text-light);margin-bottom:16px">Choose a new password.</p>
+        <div class="form-group"><label class="form-label">New Password</label><input class="form-control" type="password" id="forgot-newpw" placeholder="At least 6 characters"/></div>
+        <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-control" type="password" id="forgot-confirmpw" placeholder="Repeat password"/></div>
+        <div id="forgot-newpw-status" style="font-size:.82rem;margin-bottom:10px"></div>
+        <button class="form-btn" id="forgot-reset-btn" onclick="submitNewPassword()">Reset Password</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 
 <!-- ══════════════════════════════════════
      PAGE: PATIENT DASHBOARD
@@ -2412,19 +2452,135 @@ DB.init().then(() => {
 }).catch(e => console.error('DB init failed:', e));
 
 // ── REGISTRATION (Supabase direct) ──
+// Shared password hashing (SHA-256, salted) — used by registration and password reset
+async function hashPw(pw) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2,'0')).join('');
+  const data = new TextEncoder().encode(saltHex + pw);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  return saltHex + ':' + hex;
+}
+
+// ── FORGOT PASSWORD ──
+let _resetRole = null, _resetUserId = null, _resetPhone = null;
+
+function openForgotPassword(role) {
+  _resetRole = role; _resetUserId = null; _resetPhone = null;
+  document.getElementById('forgot-step-email').style.display = '';
+  document.getElementById('forgot-step-otp').style.display = 'none';
+  document.getElementById('forgot-step-newpw').style.display = 'none';
+  document.getElementById('forgot-email').value = '';
+  document.getElementById('forgot-otp').value = '';
+  document.getElementById('forgot-newpw').value = '';
+  document.getElementById('forgot-confirmpw').value = '';
+  ['forgot-email-status','forgot-otp-status','forgot-newpw-status'].forEach(id => document.getElementById(id).textContent = '');
+  document.getElementById('forgot-modal').style.display = 'flex';
+}
+
+function closeForgotPassword() {
+  document.getElementById('forgot-modal').style.display = 'none';
+}
+
+async function sendResetOTP() {
+  const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+  const statusEl = document.getElementById('forgot-email-status');
+  const btn = document.getElementById('forgot-send-btn');
+  if (!email) { statusEl.innerHTML = '<span style="color:#DC2626">Please enter your email</span>'; return; }
+
+  btn.disabled = true; btn.textContent = 'Checking...';
+  const table = _resetRole === 'patient' ? 'patients' : 'hospitals';
+  const phoneField = _resetRole === 'patient' ? 'mobile' : 'phone';
+
+  const { data: user, error } = await _sb.from(table).select(`id, ${phoneField}`).eq('email', email).maybeSingle();
+  if (error || !user || !user[phoneField]) {
+    statusEl.innerHTML = '<span style="color:#DC2626">No account found with that email</span>';
+    btn.disabled = false; btn.textContent = 'Send Reset Code';
+    return;
+  }
+
+  _resetUserId = user.id;
+  _resetPhone = user[phoneField];
+
+  try {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: _resetPhone.replace(/\D/g,''), role: _resetRole + '-reset' })
+    });
+    const result = await res.json();
+    if (!res.ok || result.error) {
+      statusEl.innerHTML = '<span style="color:#DC2626">Could not send code. Try again.</span>';
+      btn.disabled = false; btn.textContent = 'Send Reset Code';
+      return;
+    }
+    const masked = _resetPhone.replace(/\D/g,'').replace(/(\d{2})\d+(\d{2})/, '$1••••••$2');
+    if (result.devMode) {
+      statusEl.innerHTML = `<span style="color:#085553">✓ Dev mode OTP: <b>${result.devOtp}</b></span>`;
+    } else {
+      statusEl.innerHTML = `<span style="color:#085553">✓ Code sent to ${masked}</span>`;
+    }
+    document.getElementById('forgot-step-email').style.display = 'none';
+    document.getElementById('forgot-step-otp').style.display = '';
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:#DC2626">Could not send code. Try again.</span>';
+  }
+  btn.disabled = false; btn.textContent = 'Send Reset Code';
+}
+
+async function verifyResetOTP() {
+  const otp = document.getElementById('forgot-otp').value.trim();
+  const statusEl = document.getElementById('forgot-otp-status');
+  const btn = document.getElementById('forgot-verify-btn');
+  if (!otp) { statusEl.innerHTML = '<span style="color:#DC2626">Enter the code</span>'; return; }
+
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  try {
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: _resetPhone.replace(/\D/g,''), role: _resetRole + '-reset', otp })
+    });
+    const result = await res.json();
+    if (result.verified) {
+      document.getElementById('forgot-step-otp').style.display = 'none';
+      document.getElementById('forgot-step-newpw').style.display = '';
+    } else {
+      statusEl.innerHTML = '<span style="color:#DC2626">Incorrect code. Try again.</span>';
+    }
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:#DC2626">Could not verify right now.</span>';
+  }
+  btn.disabled = false; btn.textContent = 'Verify Code';
+}
+
+async function submitNewPassword() {
+  const pw = document.getElementById('forgot-newpw').value;
+  const confirmPw = document.getElementById('forgot-confirmpw').value;
+  const statusEl = document.getElementById('forgot-newpw-status');
+  const btn = document.getElementById('forgot-reset-btn');
+
+  if (!pw || pw.length < 6) { statusEl.innerHTML = '<span style="color:#DC2626">Password must be at least 6 characters</span>'; return; }
+  if (pw !== confirmPw) { statusEl.innerHTML = '<span style="color:#DC2626">Passwords do not match</span>'; return; }
+
+  btn.disabled = true; btn.textContent = 'Resetting...';
+  const table = _resetRole === 'patient' ? 'patients' : 'hospitals';
+  const hashed = await hashPw(pw);
+
+  const { error } = await _sb.from(table).update({ password: hashed }).eq('id', _resetUserId);
+  if (error) {
+    statusEl.innerHTML = '<span style="color:#DC2626">Could not reset password. Try again.</span>';
+    btn.disabled = false; btn.textContent = 'Reset Password';
+    return;
+  }
+
+  showToast('✅ Password reset — please sign in');
+  closeForgotPassword();
+}
+
 async function handleRegister() {
   const btn = document.getElementById('reg-btn');
   btn.textContent = 'Creating account...'; btn.disabled = true;
-
-  // Hash password helper
-  async function hashPw(pw) {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2,'0')).join('');
-    const data = new TextEncoder().encode(saltHex + pw);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-    return saltHex + ':' + hex;
-  }
 
   // DPDP: read a per-purpose consent checkbox + build an auditable consent record.
   // NOTE: consent-log write is best-effort — if the `consent_records` table doesn't exist yet
@@ -2796,9 +2952,9 @@ function renderRecords(recs) {
       <div class="record-icon">${icons[r.type]||'📄'}</div>
       <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
       <div style="display:flex;gap:6px;margin-left:auto;flex-shrink:0">
-        ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : `<span style="font-size:.72rem;color:var(--text-light);padding:5px 8px">No file</span>`}
-        <button class="record-btn" style="background:#EFF6FF;color:#2563EB;border:none" onclick="openEditRecord(${r.id})">✏ Edit</button>
-        <button class="record-btn" style="background:#FEE2E2;color:var(--emergency);border:none" onclick="deleteRecord(${r.id})">🗑 Delete</button>
+        ${r.fileData ? `<button class="record-btn" onclick="viewRecord('${r.id}')">👁 View</button>` : `<span style="font-size:.72rem;color:var(--text-light);padding:5px 8px">No file</span>`}
+        <button class="record-btn" style="background:#EFF6FF;color:#2563EB;border:none" onclick="openEditRecord('${r.id}')">✏ Edit</button>
+        <button class="record-btn" style="background:#FEE2E2;color:var(--emergency);border:none" onclick="deleteRecord('${r.id}')">🗑 Delete</button>
       </div>
     </div>`).join('') : '<div style="color:var(--text-light);font-size:.85rem;padding:12px 0">No records found</div>';
 
@@ -2809,7 +2965,7 @@ function renderRecords(recs) {
     <div class="record-item">
       <div class="record-icon">${icons[r.type]||'📄'}</div>
       <div style="flex:1"><div class="record-name">${r.name}</div><div class="record-date">${r.hospital} · ${r.date}</div></div>
-      ${r.fileData ? `<button class="record-btn" onclick="viewRecord(${r.id})">👁 View</button>` : ''}
+      ${r.fileData ? `<button class="record-btn" onclick="viewRecord('${r.id}')">👁 View</button>` : ''}
     </div>`).join('');
 
   const statEl = document.getElementById('stat-records');
