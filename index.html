@@ -820,7 +820,7 @@ footer{background:var(--body-text);color:rgba(255,255,255,.7);padding:64px 32px 
   <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
   <div class="hero-inner">
     <div>
-      <div class="hero-pill"><div class="pill-dot"></div>Now live in Hyderabad — 50+ hospitals onboarded</div>
+      <div class="hero-pill"><div class="pill-dot"></div>Now live in Telangana — 50+ hospitals onboarded</div>
       <h1 class="hero-title">Every hospital.<br>Every patient.<br><em>One platform.</em></h1>
       <p class="hero-desc">Welleni connects patients with hospitals across Hyderabad for appointments, health records, follow-ups, and emergency well — all in one seamless platform.</p>
       <div class="hero-cta">
@@ -3295,7 +3295,7 @@ async function loadRegisteredHospitals() {
   // Only select public-safe columns — never select('*') here, the row also
   // holds each hospital's password hash.
   const { data: hospitals, error } = await _sb.from('hospitals')
-    .select('id, name, city, pincode, regNo, lat, lng');
+    .select('id, name, city, pincode, regNo, lat, lng, doctors, about');
 
   if (error) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280">Could not load hospitals right now.</div>';
@@ -3319,11 +3319,27 @@ async function loadRegisteredHospitals() {
 
   grid.innerHTML = sorted.map(h => {
     const dist = (userLat && userLng && h.lat && h.lng) ? `📍 ${getDistance(userLat, userLng, h.lat, h.lng)} km` : (h.city || '');
+    const doctors = Array.isArray(h.doctors) ? h.doctors : [];
+
+    const doctorRows = doctors.length
+      ? doctors.map(d => `
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--border)">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:.8rem;font-weight:600;color:var(--body-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name || 'Doctor'}</div>
+            <div style="font-size:.72rem;color:var(--text-light)">${d.specialty || ''}</div>
+          </div>
+          <button class="btn-primary" style="padding:7px 12px;border-radius:8px;font-size:.72rem;flex-shrink:0"
+            onclick="bookAppointmentWithPayment('${(d.name||'Doctor').replace(/'/g,"\\'")}','${(d.specialty||'General').replace(/'/g,"\\'")}','${h.name.replace(/'/g,"\\'")}',500,'${h.id}')">Book</button>
+        </div>`).join('')
+      : `<button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem"
+          onclick="bookAppointmentWithPayment('Doctor','General','${h.name.replace(/'/g,"\\'")}',500,'${h.id}')">Book Now</button>`;
+
     return `<div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div>
       <div class="book-hosp">${h.name}</div>
       <div class="book-spec">${h.city || ''}${h.pincode ? ' · ' + h.pincode : ''}</div>
       <div class="book-slots" style="color:#085553;font-weight:600">${dist}</div>
-      <button class="btn-primary" style="width:100%;margin-top:12px;padding:10px;border-radius:8px;font-size:.82rem" onclick="bookAppointmentWithPayment('Doctor','General','${h.name.replace(/'/g,"\\'")}',500,'${h.id}')">Book Now</button>
+      ${h.about ? `<div style="font-size:.74rem;color:var(--text-light);margin-top:6px;line-height:1.4">${h.about}</div>` : ''}
+      ${doctorRows}
       </div>`;
   }).join('');
 }
