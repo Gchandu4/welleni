@@ -1934,12 +1934,35 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── PAGE NAVIGATION ──
+// Pages that should have a real, shareable URL (compliance/legal pages, public info) —
+// app-internal pages (dashboards, forms mid-flow) are deliberately left out of this list.
+const HASH_ROUTES = {
+  'page-privacy': 'privacy',
+  'page-terms': 'terms',
+  'page-data-rights': 'data-rights',
+  'page-landing': ''
+};
+const HASH_TO_PAGE = Object.fromEntries(Object.entries(HASH_ROUTES).map(([k,v]) => [v,k]));
+
 function goPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
   initPage(id);
+  if (id in HASH_ROUTES) {
+    const hash = HASH_ROUTES[id];
+    const newUrl = hash ? `#${hash}` : window.location.pathname;
+    history.replaceState(null, '', newUrl);
+  }
 }
+
+// On load, jump straight to a linked page if the URL has one (e.g. welleni.com/#data-rights)
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash && HASH_TO_PAGE[hash]) {
+    goPage(HASH_TO_PAGE[hash]);
+  }
+});
 function initPage(id){
   if(id==='page-landing'){
     setTimeout(()=>{
