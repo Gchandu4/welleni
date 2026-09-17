@@ -3318,7 +3318,7 @@ async function loadRegisteredHospitals() {
   // Only select public-safe columns — never select('*') here, the row also
   // holds each hospital's password hash.
   const { data: hospitals, error } = await _sb.from('hospitals')
-    .select('id, name, city, pincode, regNo, lat, lng, doctors, about');
+    .select('id, name, city, pincode, address, regNo, lat, lng, doctors, about');
 
   if (error) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#6B7280">Could not load hospitals right now.</div>';
@@ -3360,6 +3360,7 @@ async function loadRegisteredHospitals() {
     return `<div class="book-card"><div style="font-size:1.5rem;margin-bottom:8px">🏥</div>
       <div class="book-hosp">${h.name}</div>
       <div class="book-spec">${h.city || ''}${h.pincode ? ' · ' + h.pincode : ''}</div>
+      ${h.address ? `<div style="font-size:.72rem;color:var(--text-light);margin-top:2px">${h.address}</div>` : ''}
       <div class="book-slots" style="color:#085553;font-weight:600">${dist}</div>
       ${h.about ? `<div style="font-size:.74rem;color:var(--text-light);margin-top:6px;line-height:1.4">${h.about}</div>` : ''}
       ${doctorRows}
