@@ -2117,7 +2117,7 @@ async function handleCTA(btn){
       if (error.message && error.message.includes('demo_requests')) {
         // Table doesn't exist - still show success to user but log error
         console.error('Demo requests table not set up yet:', error);
-        SecureLogger.warn('demo_request_table_missing', { hospital: hospitalName, mobile: mobile });
+        console.warn('demo_request_table_missing', { hospital: hospitalName, mobile: mobile });
         
         // Show success anyway (request will be in logs)
         btn.textContent = 'Sent ✓';
@@ -2135,7 +2135,7 @@ async function handleCTA(btn){
     }
     
     // Log to audit
-    SecureLogger.info('demo_request', { hospital: hospitalName, mobile: mobile });
+    console.log('demo_request', { hospital: hospitalName, mobile: mobile });
     
     // Success
     btn.textContent = 'Sent ✓';
