@@ -2146,8 +2146,9 @@ async function handleCTA(btn){
     showToast('Demo request sent! We\'ll call you within 24 hours.');
     
   } catch(e) {
-    console.error('Demo request error:', e);
-    showToast('Failed to send request. Please call us at 7032527095');
+    console.error('Demo request error (full detail):', e);
+    const detail = e?.message || e?.error_description || JSON.stringify(e);
+    showToast('Failed to send request: ' + detail);
     btn.textContent = 'Request Demo →';
     btn.disabled = false;
   }
